@@ -1,20 +1,20 @@
-# Use a lightweight Python 3 image
+# Use the official Python 3 slim image
 FROM python:3.9-slim
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
-# Copy necessary files to the container
+# Copy application code and dependencies
 COPY server.py /app/
 COPY requirements.txt /app/
 COPY static /app/static/
 COPY data /app/data/
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /app/requirements.txt
 
-# Expose the app's port
+# Expose the application port
 EXPOSE 8080
 
-# Command to run the application
-CMD ["python", "server.py"]
+# Run the application
+CMD ["python3", "/app/server.py"]
