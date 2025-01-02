@@ -1,6 +1,6 @@
 services:
   dashly:
-    image: ghcr.io/lklynet/dashly:latest
+    image: lklynet/dashly:latest
     ports:
       - "8080:8080"
     volumes:
