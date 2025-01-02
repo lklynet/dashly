@@ -48,7 +48,7 @@ docker run -d \
   -v /path/to/your/nginx/database.sqlite:/app/database.sqlite:ro \
   --name dashly \
   --restart unless-stopped \
-  ghcr.io/lklynet/dashly:latest
+  lklynet/dashly:latest
 ```
 
 ---
@@ -98,12 +98,12 @@ To use custom paths for data:
 
 2. Build the Docker image:
    ```bash
-   docker build -t ghcr.io/lklynet/dashly:latest .
+   docker build -t lklynet/dashly:latest .
    ```
 
 3. Run the container:
    ```bash
-   docker run -d -p 8080:8080 -v $(pwd)/data:/app/user_settings.db -v /path/to/nginx/database.sqlite:/app/database.sqlite:ro ghcr.io/lklynet/dashly:latest
+   docker run -d -p 8080:8080 -v $(pwd)/data:/app/user_settings.db -v /path/to/nginx/database.sqlite:/app/database.sqlite:ro lklynet/dashly:latest
    ```
 
 ---
