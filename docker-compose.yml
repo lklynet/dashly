@@ -1,0 +1,9 @@
+services:
+  dashly:
+    image: ghcr.io/lklynet/dashly:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - /path/to/database.sqlite:/app/database.sqlite:ro  # Read-only NGINX SQLite DB
+      - /data:/app/user_settings.db  # Writable user settings database
+    restart: unless-stopped

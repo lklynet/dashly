@@ -1,0 +1,214 @@
+:root {
+  --terminal-bg: #000000;
+  --terminal-bg-alt: #111111;
+  --terminal-text: #ffffff;
+  --terminal-border: #333333;
+  --terminal-accent: #00ff00;
+  --danger-terminal: #ff5555;
+}
+body.terminal {
+  background-color: var(--terminal-bg);
+  color: var(--terminal-text);
+  font-family: "Fira Code", Consolas, Monaco, "Ubuntu Mono", "Courier New",
+    monospace;
+}
+body.terminal header {
+  background: none;
+  background-color: var(--terminal-bg-alt);
+  box-shadow: none;
+  animation: none;
+}
+body.terminal header h1 {
+  color: var(--terminal-text);
+  text-shadow: none;
+}
+body.terminal .edit-mode-toggle {
+  background: var(--terminal-bg-alt);
+  color: var(--terminal-text);
+  border: 1px solid var(--terminal-border);
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+body.terminal .edit-mode-toggle:hover {
+  background: #222222;
+  transform: translateY(-1px);
+}
+body.terminal #search {
+  background-color: var(--terminal-bg-alt);
+  color: var(--terminal-text);
+  border: 1px solid var(--terminal-border);
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+body.terminal #search:focus {
+  outline: none;
+  border-color: var(--terminal-accent);
+}
+body.terminal .section {
+  background-color: var(--terminal-bg-alt);
+  box-shadow: none;
+  border-radius: 4px;
+  border: 1px solid var(--terminal-border);
+}
+body.terminal .section h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: var(--terminal-text);
+}
+body.terminal .section button,
+body.terminal #theme-toggle {
+  background: var(--terminal-bg-alt);
+  color: var(--terminal-text);
+  border: 1px solid var(--terminal-border);
+  border-radius: 4px;
+  transition: background 0.2s, transform 0.2s;
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+}
+body.terminal .section button:hover,
+body.terminal #theme-toggle:hover {
+  background: #222222;
+  transform: translateY(-1px);
+}
+body.terminal .group-container {
+  background: var(--terminal-bg-alt);
+  border: 1px solid var(--terminal-border);
+  border-radius: 4px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  transition: transform 0.2s, background-color 0.2s;
+}
+body.terminal .group-container:hover {
+  transform: translateY(-2px);
+}
+body.terminal .group-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--terminal-text);
+}
+body.terminal .card {
+  background-color: #000000;
+  border: 1px solid var(--terminal-border);
+  border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.75rem;
+  box-shadow: none;
+  transition: transform 0.2s;
+  position: relative;
+}
+body.terminal .card:hover {
+  transform: translateY(-2px);
+}
+body.terminal .card h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--terminal-text);
+}
+body.terminal .card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #cccccc;
+}
+body.terminal .status-dot.green {
+  background-color: var(--terminal-accent);
+}
+body.terminal .status-dot.yellow {
+  background-color: #cccc00;
+}
+body.terminal .status-dot.red {
+  background-color: var(--danger-terminal);
+}
+body.terminal .drop-zone {
+  border: 2px dashed var(--terminal-border);
+  color: #888888;
+  background-color: transparent;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+body.terminal .drop-zone.highlight {
+  background-color: #1c1c1c;
+  border-color: var(--terminal-accent);
+  color: var(--terminal-accent);
+}
+body.terminal #max-columns {
+  background-color: var(--terminal-bg-alt);
+  color: var(--terminal-text);
+  border: 1px solid var(--terminal-border);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+body.terminal #max-columns:hover {
+  background-color: #222222;
+}
+body.terminal #max-columns:focus {
+  outline: none;
+  border-color: var(--terminal-accent);
+  background-color: #1c1c1c;
+}
+body.terminal .delete-group-button {
+  background: transparent;
+  color: #999999;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.2s;
+  margin-left: 0.5rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+body.terminal .delete-group-button:hover {
+  color: var(--danger-terminal);
+  transform: scale(1.1);
+}
+body.terminal .group-name-input {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--terminal-text);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed transparent;
+  padding: 0.2rem 0;
+  transition: border-color 0.2s, color 0.2s;
+}
+body.terminal .group-name-input:focus {
+  outline: none;
+  border-bottom: 1px dashed var(--terminal-accent);
+}
+body.terminal #sort-selector {
+  background-color: var(--terminal-bg-alt);
+  color: var(--terminal-text);
+  border: 1px solid var(--terminal-border);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+body.terminal #sort-selector:hover {
+  background-color: #222222;
+}
+body.terminal #sort-selector:focus {
+  outline: none;
+  border-color: var(--terminal-accent);
+  background-color: #1c1c1c;
+}
+body.terminal .settings-grid label {
+  color: var(--terminal-text);
+}
+body.terminal .settings-grid input[type="number"],
+body.terminal .settings-grid select {
+  background-color: var(--terminal-bg-alt);
+  color: var(--terminal-text);
+  border: 1px solid var(--terminal-border);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+body.terminal .settings-grid input[type="number"]:hover,
+body.terminal .settings-grid select:hover {
+  background-color: #222222;
+}
+body.terminal .settings-grid input[type="number"]:focus,
+body.terminal .settings-grid select:focus {
+  outline: none;
+  border-color: var(--terminal-accent);
+  background-color: #1c1c1c;
+}

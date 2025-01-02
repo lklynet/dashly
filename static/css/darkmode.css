@@ -1,0 +1,145 @@
+:root {
+  --bg-dark: #111827;
+  --text-dark: #1f2937;
+}
+body.dark header {
+  background: linear-gradient(135deg, #1e293b, #374151);
+  background-size: 200% 200%;
+  animation: gradientShiftDark 7s ease infinite;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6);
+}
+body.dark header h1 {
+  text-shadow: 0 0 6px var(--highlight-color);
+}
+@keyframes gradientShiftDark {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+body.dark {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+}
+body.dark .edit-mode-toggle {
+  background: #374151;
+  color: var(--text-light);
+}
+body.dark .edit-mode-toggle:hover {
+  background: #4b5563;
+}
+body.dark #search {
+  background-color: #1e293b;
+  color: var(--text-light);
+  border-color: #334155;
+}
+body.dark .section {
+  background: #1e293b;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+body.dark .section h3 {
+  color: var(--highlight-color);
+}
+body.dark .section button,
+body.dark #theme-toggle {
+  background: #374151;
+}
+body.dark .section button:hover,
+body.dark #theme-toggle:hover {
+  background: #4b5563;
+}
+body.dark .group-container {
+  background: #1e293b;
+  border-color: #374151;
+}
+body.dark .group-header h2 {
+  color: var(--highlight-color);
+}
+body.dark .card {
+  background: linear-gradient(
+    135deg,
+    rgba(46, 58, 75, 0.4),
+    rgba(16, 185, 129, 0.08)
+  );
+  border-left-color: transparent;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+body.dark .card h3 {
+  color: var(--highlight-color);
+}
+body.dark .card p {
+  color: #ccc;
+}
+body.dark .drop-zone {
+  border-color: #4b5563;
+  color: #4b5563;
+}
+body.dark .drop-zone.highlight {
+  background-color: #374151;
+  border-color: var(--highlight-color);
+  color: var(--highlight-color);
+}
+body.dark #max-columns {
+  background-color: #2e3a4b;
+  color: var(--text-light);
+  border-color: var(--highlight-color);
+}
+body.dark #max-columns:hover {
+  background-color: #374151;
+}
+body.dark #max-columns:focus {
+  border-color: var(--highlight-color);
+  background-color: #1e293b;
+}
+body.dark .delete-group-button {
+  color: #ccc;
+}
+body.dark .delete-group-button:hover {
+  color: var(--danger-color);
+}
+body.dark .group-name-input {
+  color: var(--highlight-color);
+}
+body.dark .group-name-input:focus {
+  border-bottom: 1px dashed var(--highlight-color);
+}
+body.dark #sort-selector {
+  background-color: #2e3a4b;
+  color: var(--text-light);
+  border-color: var(--highlight-color);
+}
+body.dark #sort-selector:hover {
+  background-color: #374151;
+}
+body.dark #sort-selector:focus {
+  border-color: var(--highlight-color);
+  background-color: #1e293b;
+}
+body.dark .settings-grid label {
+  color: var(--text-light);
+}
+body.dark .settings-grid input[type="number"],
+body.dark .settings-grid select {
+  background-color: #2e3a4b;
+  color: var(--text-light);
+  border-color: var(--highlight-color);
+}
+body.dark .settings-grid input[type="number"]:hover,
+body.dark .settings-grid select:hover {
+  background-color: #374151;
+}
+body.dark .settings-grid input[type="number"]:focus,
+body.dark .settings-grid select:focus {
+  border-color: var(--highlight-color);
+  background-color: #1e293b;
+}
+body.dark #search {
+  background-color: #1e293b;
+  color: var(--text-light);
+  border-color: #334155;
+}

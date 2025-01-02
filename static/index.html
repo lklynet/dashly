@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/assets/dashly.svg" type="image/x-icon">
+    <title>Dashly</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/darkmode.css" />
+    <link rel="stylesheet" href="css/midnight.css" />
+    <link rel="stylesheet" href="css/terminal.css" />
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem("theme") || "{{theme}}";
+        if (savedTheme && savedTheme !== "light") {
+          document.documentElement.classList.add(savedTheme);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <header>
+      <div style="display: flex; align-items: center; gap: 5px;">
+        <img src="/assets/dashly.svg" alt="Dashly Logo" style="height: 35px; width: auto;">
+        <h1>Dashly</h1>
+      </div>
+      <button id="edit-button" class="edit-mode-toggle">Edit</button>
+    </header>
+    <main>
+      <input
+        type="text"
+        id="search"
+        placeholder="Search by domain, IP, or status (eg., online, offline)..."
+      />
+      <div class="edit-controls hidden">
+        <div class="section">
+          <h3>Settings</h3>
+          <div class="settings-grid">
+            <div class="grid-item">
+              <button id="toggle-search">Hide Search Bar</button>
+            </div>
+
+            <div class="grid-item">
+              <button id="toggle-inactive">Hide Inactive Domains</button>
+            </div>
+
+            <div class="grid-item">
+              <button id="max-columns-toggle">Columns: 3</button>
+            </div>
+
+            <div class="grid-item">
+              <button id="theme-toggle">Light</button>
+            </div>
+
+            <div class="grid-item">
+              <button id="toggle-layout">Switch to Grid View</button>
+            </div>
+
+            <div class="grid-item">
+              <button id="add-group">Add Group</button>
+            </div>
+
+            <div class="grid-item">
+              <button id="sort-toggle">Sort: Domain Name</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="dashboard" class="gridcontainer">
+        <!-- Cards will be dynamically inserted here -->
+      </div>
+    </main>
+    <script src="js/core/settings.js"></script>
+    <script src="js/component/dragdrop.js"></script>
+    <script src="js/core/main.js"></script>
+    <script src="js/core/render.js"></script>
+    <script src="js/component/search.js"></script>
+    <script src="js/component/groups.js"></script>
+    <script src="js/component/sorting.js"></script>
+    <script src="js/component/layout.js"></script>
+    <script src="js/component/theme.js"></script>
+    <script src="js/component/inactive.js"></script>
+  </body>
+</html>
