@@ -1,8 +1,6 @@
-# Ignore the .env file
-.env
-
-# Ignore Docker-specific files
-.dockerignore
+# Ignore the .git folder and Git-specific files
+.git
+.gitignore
 
 # Ignore node_modules and Python cache files if applicable
 node_modules/

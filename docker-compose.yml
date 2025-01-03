@@ -1,8 +1,6 @@
 services:
   dashly:
-    image: dashly:local
-    build:
-      context: .
+    image: lklynet/dashly
     ports:
       - "8080:8080"
     volumes:
