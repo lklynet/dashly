@@ -1,9 +1,6 @@
 # Ignore the .env file
 .env
 
-# Ignore user settings database
-data/user_settings.db
-
 # Ignore Docker-specific files
 .dockerignore
 
