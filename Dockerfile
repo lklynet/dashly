@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # Install Python dependencies
-RUN pip3 install flask sqlite3
+RUN pip3 install flask
 
 # Expose the port your app runs on
 EXPOSE 8080
