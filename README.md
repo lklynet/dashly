@@ -16,16 +16,16 @@ Dashly is a dynamic dashboard designed for Nginx Proxy Manager users, enabling a
 ## Screenshots
 
 <p align="center">
-  <img src="/assets/screenshot1.png" alt="Dashly Screenshot 1" width="200">
+  <img src="/static/assets/screenshot1.png" alt="Dashly Screenshot 1" width="200">
 </p>
 <p align="center">
-  <img src="/assets/screenshot2.png" alt="Dashly Screenshot 2" width="200">
+  <img src="/static/assets/screenshot2.png" alt="Dashly Screenshot 2" width="200">
 </p>
 <p align="center">
-  <img src="/assets/screenshot3.png" alt="Dashly Screenshot 3" width="200">
+  <img src="/static/assets/screenshot3.png" alt="Dashly Screenshot 3" width="200">
 </p>
 <p align="center">
-  <img src="/assets/screenshot4.png" alt="Dashly Screenshot 4" width="200">
+  <img src="/static/assets/screenshot4.png" alt="Dashly Screenshot 4" width="200">
 </p>
 
 ## Future Roadmap
