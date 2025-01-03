@@ -7,6 +7,3 @@ services:
     volumes:
       - ${NGINX_DB_PATH}:/data/database.sqlite:ro
       - ${USER_SETTINGS}:/data/user_settings.db
-#    environment:
-#      - NGINX_DB_PATH=/path/to/nginx-proxy-manager/data/database.sqlite
-#      - USER_SETTINGS=/path/to/directory/
