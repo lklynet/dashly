@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="../static/assets/img/dashly.svg"
+      type="image/x-icon"
+    />
+    <title>Dashly - Dynamic Dashboard for Nginx Proxy Manager</title>
+    <style>
+      @media (max-width: 768px) {
+        /* Adjust the content layout for mobile devices */
+        .content {
+          flex-direction: column; /* Stack sections vertically */
+          gap: 10px; /* Reduce spacing for smaller screens */
+        }
+
+        .screenshot {
+          flex: 1; /* Equalize space allocation */
+        }
+
+        .screenshot img {
+          max-width: 100%; /* Ensure the image scales within its container */
+          margin-top: 0.5rem; /* Adjust margin for mobile */
+        }
+
+        .install {
+          flex: 1; /* Equalize space allocation */
+          max-width: 100%; /* Allow full-width on smaller screens */
+          padding: 0 10px; /* Add slight padding for smaller screens */
+        }
+      }
+
+      @media (max-width: 480px) {
+        /* Further adjustments for very small screens */
+        header h1 {
+          font-size: 1.4rem; /* Reduce font size */
+        }
+
+        header p {
+          font-size: 0.8rem; /* Adjust subtitle font size */
+        }
+
+        .links a {
+          font-size: 0.8rem; /* Reduce button font size */
+          padding: 6px 12px; /* Adjust button padding */
+        }
+      }
+      body {
+        margin: 0;
+        font-family: "Roboto", sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+      }
+      header {
+        flex: 0 0 10%; /* 10% of the viewport height */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      header img {
+        max-height: 50px; /* Simplified to use only max-height */
+      }
+      header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+      header p {
+        margin: 5px 0 0;
+        font-size: 0.9rem;
+      }
+      .content {
+        flex: 1; /* Take the remaining space */
+        display: flex;
+        flex-wrap: wrap; /* Allow content to wrap to a new row */
+        justify-content: center; /* Center items horizontally */
+        align-items: flex-start; /* Align items at the top */
+        gap: 20px; /* Add spacing between sections */
+        padding: 20px; /* Add padding for spacing */
+        /*max-width: 1600px; /* Optional: Limit the maximum width */
+      }
+      .screenshot {
+        flex: 2; /* Allocate more space for screenshot */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        transition: transform 0.3s ease;
+      }
+      .screenshot:hover {
+        transform: scale(1.3); /* Slightly grow on hover */
+      }
+      .screenshot img {
+        max-width: 800px;
+        width: 100%;
+        margin-top: 1rem;
+        min-width: 100px;
+        height: auto;
+        border-radius: 5px;
+        cursor: pointer;
+        user-select: none; /* Prevent selection */
+      }
+      .install {
+        flex: 2; /* Allocate less space for instructions */
+        text-align: left;
+        max-width: 600px;
+        width: 100%;
+        min-width: 100px;
+        gap: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 0.9rem;
+      }
+      .install pre {
+        background: #1e1e1e;
+        color: #66c0f4;
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 0.8rem;
+        margin: 0;
+        white-space: pre-wrap; /* Allows text to wrap */
+        word-wrap: break-word;
+      }
+      .links {
+        flex: 0 0 10%; /* Fixed footer height */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+      .links a {
+        padding: 8px 16px;
+        background: #66c0f4;
+        color: #121212;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 0.9rem;
+      }
+      .links a:hover {
+        background: #4fa1d0;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const screenshot = document.querySelector(".screenshot img");
+        const screenshots = [
+          "../static/assets/screenshot1.png",
+          "../static/assets/screenshot2.png",
+          "../static/assets/screenshot3.png",
+          "../static/assets/screenshot4.png",
+        ];
+        let currentIndex = 0;
+
+        screenshot.addEventListener("mousedown", (e) => {
+          e.preventDefault(); // Prevent mouse highlight
+        });
+
+        screenshot.addEventListener("click", (e) => {
+          e.preventDefault(); // Prevent default behavior
+          currentIndex = (currentIndex + 1) % screenshots.length;
+          screenshot.src = screenshots[currentIndex];
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <img src="../static/assets/dashly.svg" alt="Dashly Logo" />
+      <h1>Dashly</h1>
+      <p>Dynamic Dashboard for Nginx Proxy Manager</p>
+    </header>
+
+    <div class="content">
+      <div class="screenshot">
+        <img src="../static/assets/screenshot1.png" alt="Dashly Screenshot" />
+      </div>
+
+      <div class="install">
+        <h2>Installation</h2>
+
+        Create a new directory for Dashly
+
+        <pre>
+        mkdir dashly
+        cd dashly
+        </pre>
+        Configure environment variables
+
+        <pre>
+        echo "NGINX_DB_PATH=/path/to/your/nginx/database.sqlite" >> .env
+        echo "USER_SETTINGS=/data/" >> .env
+        </pre>
+        Download the Docker Compose file
+
+        <pre>
+        wget https://raw.githubusercontent.com/lklynet/dashly/refs/heads/main/docker-compose.yml
+        </pre>
+        Start Dashly
+
+        <pre>
+        docker compose up -d
+        </pre>
+      </div>
+    </div>
+
+    <div class="links">
+      <a href="https://github.com/lklynet/dashly" target="_blank">GitHub</a>
+      <a href="https://twitter.com/lklynet" target="_blank">X (Twitter)</a>
+      <a href="mailto:hi@lkly.net">Email</a>
+    </div>
+  </body>
+</html>
