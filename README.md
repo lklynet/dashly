@@ -1,9 +1,7 @@
 <p align="center">
   <img src="/static/assets/dashly.svg" alt="Dashly Logo" height="150">
-
-# Dashly
-
 </p>
+<h1 align="center">Dashly</h1>
 
 Dashly is a dynamic dashboard designed for Nginx Proxy Manager users, enabling automatic updates to homelab dashboards based on domain configurations. It eliminates the need for manually editing YAML files or forgetting to add new services, providing a seamless and intuitive experience.
 
