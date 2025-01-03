@@ -1,0 +1,16 @@
+# Ignore the .env file
+.env
+
+# Ignore user settings database
+data/user_settings.db
+
+# Ignore Docker-specific files
+.dockerignore
+
+# Ignore node_modules and Python cache files if applicable
+node_modules/
+__pycache__/
+
+# Ignore system files
+*.log
+.DS_Store

@@ -61,6 +61,11 @@ function sortDomains(criteria) {
       const domA = allDomains.find((d) => d.id === a);
       const domB = allDomains.find((d) => d.id === b);
 
+      // Handle cases where domains are not found
+      if (!domA || !domB) {
+        return 0; // Treat as equal if a domain is missing
+      }
+
       switch (criteria) {
         case "domain":
           return domA.domain_names[0].localeCompare(domB.domain_names[0]);

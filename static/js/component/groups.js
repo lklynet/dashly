@@ -43,7 +43,6 @@ function setupGroupNameEditing() {
   });
 }
 
-// Delete Group Buttons
 function setupDeleteGroupButtons() {
   const deleteButtons = document.querySelectorAll(".delete-group-button");
 
@@ -51,17 +50,22 @@ function setupDeleteGroupButtons() {
     button.addEventListener("click", (event) => {
       const groupName = event.target.dataset.group;
 
-      if (groupName !== allServicesGroupName) {
-        delete groups[groupName];
-        saveSetting("groups", groups); // Persist group removal
+      // Prevent deletion of the "All Services" group
+      if (groupName === allServicesGroupName) {
+        alert("You can't delete the default 'All Services' group.");
+        return;
       }
 
-      if (groups[groupName].length > 0) {
+      // Check if the group still contains services
+      if (groups[groupName] && groups[groupName].length > 0) {
         alert("You can't delete a group that still contains services.");
-      } else if (groupName === allServicesGroupName) {
-        alert("You can't delete the default 'All Services' group.");
-      } else {
+        return;
+      }
+
+      // Delete the group
+      if (groups[groupName]) {
         delete groups[groupName];
+        saveSetting("groups", groups); // Persist group removal
         renderDashboard();
         setupDragAndDrop();
         console.log(`Group "${groupName}" deleted.`);

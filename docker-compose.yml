@@ -1,0 +1,9 @@
+services:
+  dashly:
+    build: .
+    container_name: dashly
+    ports:
+      - "8080:8080"
+    volumes:
+      - ${NGINX_DB_PATH}:/data/database.sqlite:ro
+      - ${USER_SETTINGS}:/data/user_settings.db
