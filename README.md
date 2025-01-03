@@ -13,6 +13,21 @@ Dashly is a dynamic dashboard designed for Nginx Proxy Manager users, enabling a
 - **Search and Filter**: Quickly find services with an integrated search bar.
 - **Customizable Appearance**: Toggle themes, layouts, and visibility of inactive domains.
 
+## Screenshots
+
+<p align="center">
+  <img src="/assets/screenshot1.png" alt="Dashly Screenshot 1" width="200">
+</p>
+<p align="center">
+  <img src="/assets/screenshot2.png" alt="Dashly Screenshot 2" width="200">
+</p>
+<p align="center">
+  <img src="/assets/screenshot3.png" alt="Dashly Screenshot 3" width="200">
+</p>
+<p align="center">
+  <img src="/assets/screenshot4.png" alt="Dashly Screenshot 4" width="200">
+</p>
+
 ## Future Roadmap
 
 - Add a "Favorites" group for quick access to preferred services.
