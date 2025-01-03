@@ -1,22 +1,17 @@
-# Use an official Python image
+# Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Install sqlite3 and system dependencies
-RUN apt-get update && \
-    apt-get install -y sqlite3 libsqlite3-dev && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy application files
+# Copy the current directory contents into the container
 COPY . /app
 
 # Install Python dependencies
-RUN pip3 install -r requirements.txt
+RUN pip3 install flask sqlite3
 
-# Expose the application port
+# Expose the port your app runs on
 EXPOSE 8080
 
 # Command to run the application
-CMD ["python3", "server.py"]
+CMD ["python3", "app.py"]
