@@ -1,5 +1,0 @@
-__pycache__/
-*.pyc
-*.pyo
-.git/
-data/  # If data is dynamically created or unnecessary in the container

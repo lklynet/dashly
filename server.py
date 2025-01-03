@@ -6,8 +6,8 @@ import os
 app = Flask(__name__, static_folder="static")
 
 # Hardcoded paths match the mounted volumes
-READ_ONLY_DB_PATH = "/app/database.sqlite"  # Mounted NGINX database
-USER_SETTINGS_DB = "/app/user_settings.db"  # Mounted user settings database
+READ_ONLY_DB_PATH = "/docker/proxystack/nginx-proxy-manager/data/database.sqlite"  # Mounted NGINX database
+USER_SETTINGS_DB = "data/user_settings.db"  # Mounted user settings database
 
 def init_user_settings_db():
     print("Initializing user_settings.db")  # Debug Log
