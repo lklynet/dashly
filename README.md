@@ -39,29 +39,61 @@ Dashly is a dynamic dashboard designed for Nginx Proxy Manager users, enabling a
 - [Docker Compose](https://docs.docker.com/compose/)
 - Access to your Nginx Proxy Manager database.
 
-### Installation
+### Deployment Steps
 
-1. Clone the repository:
+1. Create a new directory for Dashly and navigate into it:
 
    ```bash
-   git clone https://github.com/lklynet/dashly.git
+   mkdir dashly
    cd dashly
    ```
 
-2. Create a `.env` file with the following variables:
+2. Create the `.env` file with the required variables:
 
-   ```env
-   NGINX_DB_PATH=/path/to/nginx-proxy-manager/database.sqlite
-   USER_SETTINGS=/path/to/preferred/app/data
+   ```bash
+   echo "NGINX_DB_PATH=/path/to/your/nginx/database.sqlite" >> .env
+   echo "USER_SETTINGS=/data/" >> .env
    ```
 
-3. Start the application using Docker Compose:
+3. Download the `docker-compose.yml` file:
+
+   ```bash
+   wget https://raw.githubusercontent.com/lklynet/dashly/refs/heads/main/docker-compose.yml
+   ```
+
+4. Start the application using Docker Compose:
 
    ```bash
    docker compose up -d
    ```
 
-4. Access the dashboard at [http://localhost:8080](http://localhost:8080).
+   Alternatively, if you are using an older version of Docker Compose:
+
+   ```bash
+   docker-compose up -d
+   ```
+
+5. Access the dashboard at [http://localhost:8080](http://localhost:8080).
+
+## Troubleshooting
+
+If the app isn't running, has database errors, or doesn't show any services:
+
+1. Double-Check:
+
+   - `.env` variables are correct and point to your Nginx Proxy Manager `database.sqlite`.
+   - User permissions are correct to read the database.
+   - The directory is bind-mounted to the Docker host.
+
+2. Install Dependencies:
+
+   ```bash
+   apt update && apt upgrade -y
+   apt install python3 sqlite3
+   pip3 install flask
+   ```
+
+   Then rebuild or update the container, and it should start right up.
 
 ## Contributing
 
@@ -73,7 +105,7 @@ Dashly is an open-source project, and contributions are welcome! If you're inter
 
 ## Roadmap for Dashly.lkly.net
 
-The app will soon be hosted at [dashly.lkly.net](https://dashly.lkly.net), featuring:
+The app is hosted at [dashly.lkly.net](https://dashly.lkly.net), will be featuring:
 
 - Screenshots and demos.
 - Comprehensive installation instructions.
