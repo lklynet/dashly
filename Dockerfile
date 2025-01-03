@@ -1,7 +1,10 @@
-# Use the official Python 3 slim image
+# Use a lightweight Python base image
 FROM python:3.9-slim
 
-# Set the working directory
+# Install SQLite
+RUN apt-get update && apt-get install -y sqlite3 && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
 WORKDIR /app
 
 # Copy application code and dependencies
@@ -11,10 +14,10 @@ COPY static /app/static/
 COPY data /app/data/
 
 # Install Python dependencies
-RUN python3 -m pip install --no-cache-dir -r /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Expose the application port
+# Expose application port
 EXPOSE 8080
 
 # Run the application
-CMD ["python3", "/app/server.py"]
+CMD ["python", "/app/server.py"]
