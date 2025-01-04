@@ -6,7 +6,7 @@ import os
 app = Flask(__name__, static_folder="static")
 
 # Hardcoded paths match the mounted volumes
-READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "/data/database.sqlite")
+READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "data/database.sqlite")
 USER_SETTINGS_DB = os.getenv("USER_SETTINGS", "data/user_settings.db")
 
 def init_user_settings_db():

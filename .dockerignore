@@ -9,3 +9,5 @@ __pycache__/
 # Ignore system files
 *.log
 .DS_Store
+
+data/
