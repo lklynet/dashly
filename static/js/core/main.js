@@ -3,8 +3,8 @@ let showInactive = true; // Toggle for inactive domains
 let showSearch = true; // Toggle for search bar
 let allDomains = []; // Store all domains
 let editMode = false; // Edit Mode toggle state
-let groups = { "All Services": [] }; // Stores groups and their associated domain IDs
-let allServicesGroupName = "All Services"; // Track the current name of the "All Services" group
+let groups = { "New Services": [] }; // Stores groups and their associated domain IDs
+let allServicesGroupName = "New Services"; // Track the current name of the "New Services" group
 let maxColumns = 3; // Default max columns for groups
 
 const gridcontainer = document.getElementById("dashboard");
@@ -49,14 +49,14 @@ async function fetchAndRender() {
     // Initialize groups
     groups = settings.groups || {};
     let allServicesGroupName =
-      settings.renamedGroupNames?.allServices || "All Services";
+      settings.renamedGroupNames?.allServices || "New Services";
 
-    // Check if the renamed "All Services" group exists
+    // Check if the renamed "New Services" group exists
     if (!groups[allServicesGroupName]) {
       groups[allServicesGroupName] = domains.map((domain) => domain.id); // Populate with all domain IDs
     }
 
-    // Save updated settings to ensure "All Services" persists under the renamed name
+    // Save updated settings to ensure "New Services" persists under the renamed name
     saveSetting("groups", groups);
     saveSetting("renamedGroupNames", {
       ...settings.renamedGroupNames,
@@ -72,15 +72,6 @@ async function fetchAndRender() {
     console.error("Error fetching or rendering data:", error);
   }
 }
-
-const domainIds = groups[groupName];
-domainIds.forEach((domainId) => {
-  const domain = allDomains.find((d) => d.id === domainId);
-  if (domain && (showInactive || domain.enabled)) {
-    const card = createCard(domain);
-    groupServices.appendChild(card);
-  }
-});
 
 function toggleMaxColumns() {
   // Cycle through 1, 2, 3 columns
@@ -135,15 +126,15 @@ function renderDashboard() {
 
     if (editMode) {
       groupHeader.innerHTML = `
-        <input 
-          class="group-name-input" 
-          data-group="${groupName}" 
-          value="${groupName}" 
-        />
-        <button class="delete-group-button" data-group="${groupName}">
-          &times;
-        </button>
-      `;
+            <input 
+                class="group-name-input" 
+                data-group="${groupName}" 
+                value="${groupName}" 
+            />
+            <button class="delete-group-button" data-group="${groupName}">
+                &times;
+            </button>
+        `;
     } else {
       groupHeader.innerHTML = `<h2>${groupName}</h2>`;
     }
@@ -175,23 +166,36 @@ function renderDashboard() {
     dashboard.appendChild(groupContainer);
   });
 
+  // Handle ungrouped domains
+  const ungroupedDomains = allDomains.filter((domain) => {
+    return !Object.values(groups).some((group) => group.includes(domain.id));
+  });
+
+  if (ungroupedDomains.length > 0) {
+    console.log(
+      "Adding ungrouped domains to 'New Services':",
+      ungroupedDomains
+    );
+
+    const defaultGroup = "New Services";
+    if (!groups[defaultGroup]) {
+      groups[defaultGroup] = [];
+    }
+
+    ungroupedDomains.forEach((domain) => {
+      groups[defaultGroup].push(domain.id);
+    });
+
+    saveSetting("groups", groups); // Persist changes
+  }
+
   if (editMode) {
     setupGroupNameEditing();
     setupDeleteGroupButtons();
   }
-}
 
-// Listen for changes to the max columns input
-document.getElementById("max-columns").addEventListener("input", (event) => {
-  const newMaxColumns = parseInt(event.target.value, 10);
-  if (!isNaN(newMaxColumns) && newMaxColumns > 0) {
-    maxColumns = newMaxColumns;
-    renderDashboard();
-  } else {
-    alert("Please enter a valid number greater than 0");
-    event.target.value = maxColumns;
-  }
-});
+  setupDragAndDrop(); // Ensure drag-and-drop functionality
+}
 
 // Create Card
 function createCard(domain) {

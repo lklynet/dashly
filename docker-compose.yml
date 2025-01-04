@@ -4,6 +4,6 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ${NGINX_DB_PATH}:/data/database.sqlite:ro
-      - ${USER_SETTINGS}:/data/user_settings.db
+      - ${NGINX_DB_PATH}:/nginx/database.sqlite:ro
+      - ${USER_SETTINGS}:/data
     restart: unless-stopped

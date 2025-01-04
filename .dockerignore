@@ -10,4 +10,4 @@ __pycache__/
 *.log
 .DS_Store
 
-data/
+/data/

@@ -50,12 +50,6 @@ function setupDeleteGroupButtons() {
     button.addEventListener("click", (event) => {
       const groupName = event.target.dataset.group;
 
-      // Prevent deletion of the "All Services" group
-      if (groupName === allServicesGroupName) {
-        alert("You can't delete the default 'All Services' group.");
-        return;
-      }
-
       // Check if the group still contains services
       if (groups[groupName] && groups[groupName].length > 0) {
         alert("You can't delete a group that still contains services.");
