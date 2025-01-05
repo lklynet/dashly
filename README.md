@@ -7,6 +7,8 @@
 
 **Dashly** is a lightweight, real-time dashboard for users of **Nginx Proxy Manager**. It simplifies how you monitor and organize your services by automatically syncing with your NPM database. This means you never have to manually edit dashboard configuration files like YAML—it dynamically tracks and displays all your services based on their domain configurations in NPM.
 
+![2025-01-05](/static/assets/hero.png)
+
 ## Core Features
 
 - **Dynamic Updates:**

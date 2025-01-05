@@ -9,7 +9,7 @@ app = Flask(__name__, static_folder="static")
 import os
 
 # Ensure paths are absolute
-READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "/nginx/database.sqlite")
+READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "nginx/database.sqlite")
 user_settings_env = os.getenv("USER_SETTINGS", "data")
 if not os.path.isabs(user_settings_env):
     user_settings_env = os.path.join("/", user_settings_env)
