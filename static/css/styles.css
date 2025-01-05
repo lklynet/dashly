@@ -6,21 +6,55 @@
   --warning-color: #f59e0b;
   --bg-light: #f9fafb;
   --text-light: #ffffff;
+  --text-dark: #555;
+  --border-color: #ccc;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.15);
+  --shadow-dark: rgba(0, 0, 0, 0.7);
+  --drop-zone-color: #9ca3af;
+  --drop-zone-highlight-bg: #e5e7eb;
   --base-spacing: 1rem;
   --transition-speed: 0.3s;
 }
 .hidden {
   display: none !important;
 }
-
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
+  font-weight: 400;
   background-color: var(--bg-light);
   color: var(--text-dark);
   transition: background-color var(--transition-speed),
     color var(--transition-speed);
   line-height: 1.4;
+}
+h1 {
+  font-weight: 600;
+  color: var(--text-light);
+}
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+p,
+li,
+span {
+  font-weight: 400;
+}
+.edit-mode-toggle,
+button {
+  font-weight: 500;
+}
+.card h3 {
+  font-weight: 600;
+}
+.card p {
+  font-weight: 300;
 }
 * {
   box-sizing: border-box;
@@ -39,14 +73,11 @@ header {
   background-size: 200% 200%;
   color: var(--text-light);
   padding: var(--base-spacing) calc(var(--base-spacing) * 2);
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 6px var(--shadow-light);
   animation: gradientShift 7s ease infinite;
 }
 header h1 {
   margin: 0;
-  font-size: 1.8rem;
-  font-weight: 600;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
 }
 @keyframes gradientShift {
   0% {
@@ -64,14 +95,13 @@ header h1 {
   color: var(--text-light);
   border: none;
   padding: 0.6rem 1.2rem;
-  font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
   transition: background var(--transition-speed),
     transform var(--transition-speed);
 }
 .edit-mode-toggle:hover {
-  background: #059669;
+  background: var(--highlight-color);
   transform: translateY(-2px);
 }
 main {
@@ -84,9 +114,9 @@ main {
   margin: var(--base-spacing) auto 2rem;
   display: block;
   padding: 0.8rem;
-  border: 1px solid #ccc;
+  border: 0px solid var(--border-color);
   border-radius: 8px;
-  font-size: 1rem;
+  box-shadow: 0px 2px 4px var(--shadow-light);
   transition: border-color var(--transition-speed),
     background-color var(--transition-speed);
 }
@@ -102,22 +132,20 @@ main {
 }
 .section {
   flex: 1 1 300px;
-  background: #ffffff;
+  background: var(--bg-light);
   border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  box-shadow: 0px 4px 6px var(--shadow-light);
   transition: background-color var(--transition-speed),
     box-shadow var(--transition-speed);
 }
-.section h3 {
-  margin-top: 0;
-  font-size: 1.2rem;
+.section h2 {
+  margin: 0;
   color: var(--primary-color);
 }
 .section button,
 #theme-toggle {
   padding: 0.5rem 1rem;
-  font-size: 1rem;
   background: var(--primary-color);
   color: var(--text-light);
   border: none;
@@ -144,32 +172,24 @@ main {
   display: grid;
   grid-gap: 1rem;
 }
-
 #dashboard.grid-view .group-services {
   display: grid;
   gap: 0.5rem;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
-
-@media (max-width: 768px) {
-  #dashboard {
-    grid-template-columns: 1fr !important;
-  }
-}
 .group-container {
-  background: #ffffff;
-  border: 1px solid #ddd;
+  background: var(--bg-light);
   border-radius: 12px;
   padding: var(--base-spacing);
   display: flex;
   flex-direction: column;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 6px var(--shadow-light);
   transition: transform var(--transition-speed),
     box-shadow var(--transition-speed), background-color var(--transition-speed);
 }
 .group-container:hover {
   transform: translateY(-3px);
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 6px 10px var(--shadow-medium);
 }
 .group-header {
   display: flex;
@@ -179,25 +199,24 @@ main {
 }
 .group-header h2 {
   margin: 0;
-  font-size: 1.4rem;
   color: var(--primary-color);
 }
 .card {
   background: linear-gradient(
     135deg,
-    rgba(139, 92, 246, 0.05),
-    rgba(16, 185, 129, 0.05)
+    rgba(var(--primary-color), 0.05),
+    rgba(var(--highlight-color), 0.05)
   );
   border-radius: 8px;
   border-left: 4px solid transparent;
   padding: 0.6rem 0.8rem;
   margin-bottom: 0.75rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--shadow-light);
   transition: transform var(--transition-speed),
     box-shadow var(--transition-speed);
   position: relative;
 }
-.card-overlay-link {
+.card-link {
   position: absolute;
   top: 0;
   left: 0;
@@ -210,18 +229,15 @@ main {
 }
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px var(--shadow-medium);
 }
 .card h3 {
   margin: 0 0 0.25rem;
-  font-size: 1.1rem;
-  font-weight: 600;
   color: var(--primary-color);
 }
 .card p {
   margin: 0;
-  font-size: 0.9rem;
-  color: #555;
+  color: var(--text-dark);
 }
 .card.online {
   border-left-color: var(--highlight-color);
@@ -253,15 +269,15 @@ main {
 @keyframes pulse {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    box-shadow: 0 0 0 0 var(--shadow-dark);
   }
   70% {
     transform: scale(1.3);
-    box-shadow: 0 0 20px 10px rgba(16, 185, 129, 0);
+    box-shadow: 0 0 20px 10px rgba(var(--highlight-color), 0);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 0 rgba(var(--highlight-color), 0);
   }
 }
 .status-dot.green {
@@ -270,43 +286,40 @@ main {
 .drop-zone {
   padding: var(--base-spacing);
   margin: 0.5rem 0;
-  border: 2px dashed #9ca3af;
+  border: 2px dashed var(--drop-zone-color);
   border-radius: 8px;
   text-align: center;
-  color: #9ca3af;
-  font-size: 1rem;
+  color: var(--drop-zone-color);
   transition: background-color var(--transition-speed),
-    border-color var(--transition-speed);
+    border-color var(--transition-speed), transform var(--transition-speed);
 }
 .drop-zone.highlight {
-  background-color: #e5e7eb;
+  background-color: var(--drop-zone-highlight-bg);
   border-color: var(--primary-color);
   color: var(--secondary-color);
 }
 #max-columns {
   width: 60px;
   padding: 0.3rem 0.6rem;
-  font-size: 1rem;
   border: 1px solid var(--primary-color);
   border-radius: 4px;
-  background-color: rgba(139, 92, 246, 0.05);
+  background-color: rgba(var(--primary-color), 0.05);
   color: var(--text-dark);
   transition: background-color var(--transition-speed),
-    border-color var(--transition-speed);
+    border-color var(--transition-speed), transform var(--transition-speed);
 }
 #max-columns:hover {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(var(--primary-color), 0.1);
 }
 #max-columns:focus {
   outline: none;
   border-color: var(--secondary-color);
-  background-color: rgba(139, 92, 246, 0.15);
+  background-color: rgba(var(--primary-color), 0.15);
 }
 .delete-group-button {
   background: transparent;
-  color: #999;
+  color: var(--drop-zone-color);
   border: none;
-  font-size: 1.2rem;
   cursor: pointer;
   transition: color var(--transition-speed), transform var(--transition-speed);
   margin-left: 0.5rem;
@@ -318,7 +331,7 @@ main {
   transform: scale(1.1);
 }
 .group-name-input {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: var(--primary-color);
   background: transparent;
@@ -340,32 +353,28 @@ main {
   max-width: 600px;
   margin: 1rem auto;
 }
-
 .filter-sort-container label {
-  font-size: 1rem;
-  font-weight: 500;
   margin-right: 0.3rem;
   color: var(--text-dark);
   transition: color var(--transition-speed);
 }
 #sort-selector {
   padding: 0.3rem 6rem;
-  font-size: 1rem;
   height: 2rem;
   border: 1px solid var(--primary-color);
   border-radius: 4px;
-  background-color: rgba(139, 92, 246, 0.05);
+  background-color: rgba(var(--primary-color), 0.05);
   color: var(--text-dark);
   transition: background-color var(--transition-speed),
-    border-color var(--transition-speed);
+    border-color var(--transition-speed), transform var(--transition-speed);
 }
 #sort-selector:hover {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(var(--primary-color), 0.1);
 }
 #sort-selector:focus {
   outline: none;
   border-color: var(--secondary-color);
-  background-color: rgba(139, 92, 246, 0.15);
+  background-color: rgba(var(--primary-color), 0.15);
 }
 .settings-grid {
   display: grid;
@@ -383,37 +392,34 @@ main {
 }
 .settings-grid button,
 .settings-grid input[type="number"],
-.settings-grid select {
+select {
   width: 100%;
   box-sizing: border-box;
   min-height: 2.5rem;
 }
 .settings-grid label {
-  font-size: 1rem;
-  font-weight: 500;
   color: var(--text-dark);
   transition: color var(--transition-speed);
   white-space: nowrap;
 }
 .settings-grid input[type="number"],
-.settings-grid select {
-  font-size: 1rem;
+select {
   padding: 0.5rem 1rem;
   border: 1px solid var(--primary-color);
   border-radius: 4px;
-  background-color: rgba(139, 92, 246, 0.05);
+  background-color: rgba(var(--primary-color), 0.05);
   color: var(--text-dark);
   cursor: pointer;
   transition: background-color var(--transition-speed),
-    border-color var(--transition-speed);
+    border-color var(--transition-speed), transform var(--transition-speed);
 }
 .settings-grid input[type="number"]:hover,
 .settings-grid select:hover {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(var(--primary-color), 0.1);
 }
 .settings-grid input[type="number"]:focus,
 .settings-grid select:focus {
   outline: none;
   border-color: var(--secondary-color);
-  background-color: rgba(139, 92, 246, 0.15);
+  background-color: rgba(var(--primary-color), 0.15);
 }

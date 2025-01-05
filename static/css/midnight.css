@@ -1,76 +1,82 @@
 :root {
-  --midnight-bg: #141414;
-  --midnight-bg-alt: #1f1f1f;
-  --midnight-text: #e2e2e2;
-  --midnight-border: #333333;
-  --midnight-hover: #2b2b2b;
-  --midnight-highlight: #5bc0de;
+  --bg-midnight: #141414;
+  --bg-midnight-alt: #1f1f1f;
+  --text-midnight: #e2e2e2;
+  --border-midnight: #333333;
+  --hover-midnight: #2b2b2b;
+  --highlight-midnight: #5bc0de;
   --danger-midnight: #ef4444;
+  --text-muted-midnight: #bbb;
+  --shadow-light-midnight: rgba(0, 0, 0, 0.5);
+  --shadow-medium-midnight: rgba(0, 0, 0, 0.6);
+  --drop-zone-highlight-bg-midnight: #2a2a2a;
+  --card-bg-midnight: #1c1c1c;
 }
+
+body.midnight {
+  background-color: var(--bg-midnight);
+  color: var(--text-midnight);
+}
+
 body.midnight header {
-  background: none;
-  background-color: var(--midnight-bg-alt);
-  background-size: auto;
-  animation: none;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: space-between;
+  background-color: var(--bg-midnight-alt);
+  box-shadow: 0px 4px 6px var(--shadow-light-midnight);
 }
 body.midnight header h1 {
-  color: var(--midnight-text);
-  text-shadow: none;
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 600;
+  color: var(--text-midnight);
 }
-body.midnight {
-  background-color: var(--midnight-bg);
-  color: var(--midnight-text);
+
+body.midnight .section h2 {
+  color: var(--highlight-midnight);
 }
+
 body.midnight .edit-mode-toggle {
-  background: var(--midnight-hover);
-  color: var(--midnight-text);
+  background: var(--hover-midnight);
+  color: var(--text-midnight);
   border: none;
   padding: 0.6rem 1.2rem;
-  font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s, transform 0.3s;
+  transition: background var(--transition-speed),
+    transform var(--transition-speed);
 }
 body.midnight .edit-mode-toggle:hover {
   background: #3a3a3a;
   transform: translateY(-2px);
 }
+
 body.midnight #search {
-  background-color: var(--midnight-bg-alt);
-  color: var(--midnight-text);
-  border: 1px solid var(--midnight-border);
+  background-color: var(--bg-midnight-alt);
+  color: var(--text-midnight);
+  border: 0px solid var(--border-midnight);
   border-radius: 8px;
-  transition: border-color 0.3s, background-color 0.3s;
+  transition: border-color var(--transition-speed),
+    background-color var(--transition-speed);
 }
 body.midnight #search:focus {
   outline: none;
-  border-color: var(--midnight-highlight);
+  border-color: var(--highlight-midnight);
 }
+
 body.midnight .section {
-  background: var(--midnight-bg-alt);
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+  background: var(--bg-midnight-alt);
+  box-shadow: 0px 4px 6px var(--shadow-light-midnight);
   border-radius: 8px;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition: background-color var(--transition-speed),
+    box-shadow var(--transition-speed);
 }
 body.midnight .section h3 {
   margin-top: 0;
-  font-size: 1.2rem;
-  color: var(--midnight-highlight);
+  color: var(--highlight-midnight);
 }
 body.midnight .section button,
 body.midnight #theme-toggle {
-  background: var(--midnight-hover);
-  color: var(--midnight-text);
-  border: none;
+  background: var(--hover-midnight);
+  color: var(--text-midnight);
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.3s, transform 0.3s;
+  transition: background var(--transition-speed),
+    transform var(--transition-speed);
   margin-right: 0.5rem;
   margin-top: 0.5rem;
 }
@@ -79,52 +85,51 @@ body.midnight #theme-toggle:hover {
   background: #3a3a3a;
   transform: translateY(-2px);
 }
+
 body.midnight .group-container {
-  background: var(--midnight-bg-alt);
-  border: 1px solid var(--midnight-border);
+  background: var(--bg-midnight-alt);
   border-radius: 12px;
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+  box-shadow: 0px 4px 6px var(--shadow-light-midnight);
+  transition: transform var(--transition-speed),
+    box-shadow var(--transition-speed), background-color var(--transition-speed);
 }
 body.midnight .group-container:hover {
   transform: translateY(-3px);
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.6);
+  box-shadow: 0px 6px 10px var(--shadow-medium-midnight);
 }
 body.midnight .group-header h2 {
   margin: 0;
-  font-size: 1.4rem;
-  color: var(--midnight-highlight);
+  color: var(--highlight-midnight);
 }
+
 body.midnight .card {
-  background-color: #1c1c1c;
-  border: 1px solid var(--midnight-border);
+  background-color: var(--card-bg-midnight);
   border-radius: 8px;
   padding: 0.6rem 0.8rem;
   margin-bottom: 0.75rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px var(--shadow-light-midnight);
+  transition: transform var(--transition-speed),
+    box-shadow var(--transition-speed);
   position: relative;
 }
 body.midnight .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 8px var(--shadow-medium-midnight);
 }
 body.midnight .card h3 {
   margin: 0 0 0.25rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--midnight-text);
+  color: var(--text-midnight);
 }
 body.midnight .card p {
   margin: 0;
-  font-size: 0.9rem;
-  color: #bbb;
+  color: var(--text-muted-midnight);
 }
+
 body.midnight .status-dot.green {
-  background-color: var(--midnight-highlight);
+  background-color: var(--highlight-midnight);
 }
 body.midnight .status-dot.yellow {
   background-color: #eab308;
@@ -132,38 +137,40 @@ body.midnight .status-dot.yellow {
 body.midnight .status-dot.red {
   background-color: var(--danger-midnight);
 }
+
 body.midnight .drop-zone {
-  border: 2px dashed var(--midnight-border);
-  color: var(--midnight-border);
+  border: 2px dashed var(--border-midnight);
+  color: var(--border-midnight);
   background-color: transparent;
-  transition: background-color 0.3s, border-color 0.3s;
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
 }
 body.midnight .drop-zone.highlight {
-  background-color: #2a2a2a;
-  border-color: var(--midnight-highlight);
-  color: var(--midnight-highlight);
+  background-color: var(--drop-zone-highlight-bg-midnight);
+  border-color: var(--highlight-midnight);
+  color: var(--highlight-midnight);
 }
+
 body.midnight #max-columns {
-  background-color: var(--midnight-bg-alt);
-  color: var(--midnight-text);
-  border: 1px solid var(--midnight-highlight);
-  transition: background-color 0.3s, border-color 0.3s;
+  background-color: var(--bg-midnight-alt);
+  color: var(--text-midnight);
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
 }
 body.midnight #max-columns:hover {
-  background-color: var(--midnight-hover);
+  background-color: var(--hover-midnight);
 }
 body.midnight #max-columns:focus {
   outline: none;
-  border-color: var(--midnight-highlight);
+  border-color: var(--highlight-midnight);
   background-color: #1e1e1e;
 }
+
 body.midnight .delete-group-button {
   background: transparent;
   color: #999;
-  border: none;
-  font-size: 1.2rem;
   cursor: pointer;
-  transition: color 0.3s, transform 0.3s;
+  transition: color var(--transition-speed), transform var(--transition-speed);
   margin-left: 0.5rem;
   padding: 0.25rem;
   border-radius: 4px;
@@ -172,51 +179,53 @@ body.midnight .delete-group-button:hover {
   color: var(--danger-midnight);
   transform: scale(1.1);
 }
+
 body.midnight .group-name-input {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--midnight-highlight);
+  color: var(--highlight-midnight);
   background: transparent;
   border: none;
   border-bottom: 1px dashed transparent;
-  transition: border-color 0.3s, color 0.3s;
   padding: 0.2rem 0;
+  transition: border-color var(--transition-speed),
+    color var(--transition-speed);
 }
 body.midnight .group-name-input:focus {
   outline: none;
-  border-bottom: 1px dashed var(--midnight-highlight);
+  border-bottom: 1px dashed var(--highlight-midnight);
 }
+
 body.midnight #sort-selector {
-  background-color: var(--midnight-bg-alt);
-  color: var(--midnight-text);
-  border: 1px solid var(--midnight-highlight);
-  transition: background-color 0.3s, border-color 0.3s;
+  background-color: var(--bg-midnight-alt);
+  color: var(--text-midnight);
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
 }
 body.midnight #sort-selector:hover {
-  background-color: var(--midnight-hover);
+  background-color: var(--hover-midnight);
 }
 body.midnight #sort-selector:focus {
   outline: none;
-  border-color: var(--midnight-highlight);
+  border-color: var(--highlight-midnight);
   background-color: #1e1e1e;
 }
+
 body.midnight .settings-grid label {
-  color: var(--midnight-text);
+  color: var(--text-midnight);
 }
 body.midnight .settings-grid input[type="number"],
 body.midnight .settings-grid select {
-  background-color: var(--midnight-bg-alt);
-  color: var(--midnight-text);
-  border: 1px solid var(--midnight-highlight);
-  transition: background-color 0.3s, border-color 0.3s;
+  background-color: var(--bg-midnight-alt);
+  color: var(--text-midnight);
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
 }
 body.midnight .settings-grid input[type="number"]:hover,
 body.midnight .settings-grid select:hover {
-  background-color: var(--midnight-hover);
+  background-color: var(--hover-midnight);
 }
 body.midnight .settings-grid input[type="number"]:focus,
 body.midnight .settings-grid select:focus {
   outline: none;
-  border-color: var(--midnight-highlight);
+  border-color: var(--highlight-midnight);
   background-color: #1e1e1e;
 }

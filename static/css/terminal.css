@@ -1,104 +1,120 @@
 :root {
-  --terminal-bg: #000000;
-  --terminal-bg-alt: #111111;
-  --terminal-text: #ffffff;
-  --terminal-border: #333333;
-  --terminal-accent: #00ff00;
+  --bg-terminal: #000000;
+  --bg-terminal-alt: #111111;
+  --text-terminal: #ffffff;
+  --text-muted-terminal: #cccccc;
+  --border-terminal: #333333;
+  --accent-terminal: #00ff00;
   --danger-terminal: #ff5555;
+  --hover-terminal: #222222;
+  --drop-zone-highlight-terminal: #1c1c1c;
+  --transition-speed: 0.2s;
 }
+
 body.terminal {
-  background-color: var(--terminal-bg);
-  color: var(--terminal-text);
-  font-family: "Fira Code", Consolas, Monaco, "Ubuntu Mono", "Courier New",
-    monospace;
+  background-color: var(--bg-terminal);
+  color: var(--text-terminal);
+  font-family: "Source Code Pro", monospace;
 }
+
 body.terminal header {
-  background: none;
-  background-color: var(--terminal-bg-alt);
+  background-color: var(--bg-terminal-alt);
   box-shadow: none;
   animation: none;
 }
 body.terminal header h1 {
-  color: var(--terminal-text);
-  text-shadow: none;
+  color: var(--text-terminal);
+  font-family: "Source Code Pro", monospace;
+  font-weight: 600;
 }
+
+body.terminal .section h2 {
+  color: var(--text-terminal);
+  font-family: "Source Code Pro", monospace;
+  font-weight: 600;
+}
+
 body.terminal .edit-mode-toggle {
-  background: var(--terminal-bg-alt);
-  color: var(--terminal-text);
-  border: 1px solid var(--terminal-border);
+  background: var(--bg-terminal-alt);
+  color: var(--text-terminal);
+  border: 1px solid var(--border-terminal);
   padding: 0.6rem 1.2rem;
-  font-size: 1rem;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: background var(--transition-speed),
+    transform var(--transition-speed);
 }
 body.terminal .edit-mode-toggle:hover {
-  background: #222222;
+  background: var(--hover-terminal);
   transform: translateY(-1px);
 }
+
 body.terminal #search {
-  background-color: var(--terminal-bg-alt);
-  color: var(--terminal-text);
-  border: 1px solid var(--terminal-border);
+  background-color: var(--bg-terminal-alt);
+  color: var(--text-terminal);
+  border: 1px solid var(--border-terminal);
   border-radius: 4px;
-  transition: border-color 0.2s;
+  transition: border-color var(--transition-speed);
 }
 body.terminal #search:focus {
   outline: none;
-  border-color: var(--terminal-accent);
+  border-color: var(--accent-terminal);
 }
+
 body.terminal .section {
-  background-color: var(--terminal-bg-alt);
+  background-color: var(--bg-terminal-alt);
   box-shadow: none;
   border-radius: 4px;
-  border: 1px solid var(--terminal-border);
+  border: 1px solid var(--border-terminal);
 }
 body.terminal .section h3 {
   margin-top: 0;
-  font-size: 1.2rem;
-  color: var(--terminal-text);
+  color: var(--text-terminal);
 }
 body.terminal .section button,
 body.terminal #theme-toggle {
-  background: var(--terminal-bg-alt);
-  color: var(--terminal-text);
-  border: 1px solid var(--terminal-border);
+  background: var(--bg-terminal-alt);
+  color: var(--text-terminal);
+  border: 1px solid var(--border-terminal);
   border-radius: 4px;
-  transition: background 0.2s, transform 0.2s;
+  transition: background var(--transition-speed),
+    transform var(--transition-speed);
   margin-right: 0.5rem;
   margin-top: 0.5rem;
 }
 body.terminal .section button:hover,
 body.terminal #theme-toggle:hover {
-  background: #222222;
+  background: var(--hover-terminal);
   transform: translateY(-1px);
 }
+
 body.terminal .group-container {
-  background: var(--terminal-bg-alt);
-  border: 1px solid var(--terminal-border);
+  background: var(--bg-terminal-alt);
+  border: 1px solid var(--border-terminal);
   border-radius: 4px;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   box-shadow: none;
-  transition: transform 0.2s, background-color 0.2s;
+  transition: transform var(--transition-speed),
+    background-color var(--transition-speed);
 }
 body.terminal .group-container:hover {
   transform: translateY(-2px);
 }
 body.terminal .group-header h2 {
   margin: 0;
-  font-size: 1.4rem;
-  color: var(--terminal-text);
+  color: var(--text-terminal);
 }
+
 body.terminal .card {
-  background-color: #000000;
-  border: 1px solid var(--terminal-border);
+  background-color: var(--bg-terminal);
+  border: 1px solid var(--border-terminal);
   border-radius: 4px;
   padding: 0.6rem 0.8rem;
   margin-bottom: 0.75rem;
   box-shadow: none;
-  transition: transform 0.2s;
+  transition: transform var(--transition-speed);
   position: relative;
 }
 body.terminal .card:hover {
@@ -106,17 +122,15 @@ body.terminal .card:hover {
 }
 body.terminal .card h3 {
   margin: 0 0 0.25rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--terminal-text);
+  color: var(--text-terminal);
 }
 body.terminal .card p {
   margin: 0;
-  font-size: 0.9rem;
-  color: #cccccc;
+  color: var(--text-muted-terminal);
 }
+
 body.terminal .status-dot.green {
-  background-color: var(--terminal-accent);
+  background-color: var(--accent-terminal);
 }
 body.terminal .status-dot.yellow {
   background-color: #cccc00;
@@ -124,38 +138,42 @@ body.terminal .status-dot.yellow {
 body.terminal .status-dot.red {
   background-color: var(--danger-terminal);
 }
+
 body.terminal .drop-zone {
-  border: 2px dashed var(--terminal-border);
-  color: #888888;
+  border: 2px dashed var(--border-terminal);
+  color: var(--text-muted-terminal);
   background-color: transparent;
-  transition: background-color 0.2s, border-color 0.2s;
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
 }
 body.terminal .drop-zone.highlight {
-  background-color: #1c1c1c;
-  border-color: var(--terminal-accent);
-  color: var(--terminal-accent);
+  background-color: var(--drop-zone-highlight-terminal);
+  border-color: var(--accent-terminal);
+  color: var(--accent-terminal);
 }
+
 body.terminal #max-columns {
-  background-color: var(--terminal-bg-alt);
-  color: var(--terminal-text);
-  border: 1px solid var(--terminal-border);
-  transition: background-color 0.2s, border-color 0.2s;
+  background-color: var(--bg-terminal-alt);
+  color: var(--text-terminal);
+  border: 1px solid var(--border-terminal);
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
 }
 body.terminal #max-columns:hover {
-  background-color: #222222;
+  background-color: var(--hover-terminal);
 }
 body.terminal #max-columns:focus {
   outline: none;
-  border-color: var(--terminal-accent);
-  background-color: #1c1c1c;
+  border-color: var(--accent-terminal);
+  background-color: var(--drop-zone-highlight-terminal);
 }
+
 body.terminal .delete-group-button {
   background: transparent;
   color: #999999;
   border: none;
-  font-size: 1.2rem;
   cursor: pointer;
-  transition: color 0.2s, transform 0.2s;
+  transition: color var(--transition-speed), transform var(--transition-speed);
   margin-left: 0.5rem;
   padding: 0.25rem;
   border-radius: 4px;
@@ -164,51 +182,55 @@ body.terminal .delete-group-button:hover {
   color: var(--danger-terminal);
   transform: scale(1.1);
 }
+
 body.terminal .group-name-input {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--terminal-text);
+  color: var(--text-terminal);
   background: transparent;
   border: none;
   border-bottom: 1px dashed transparent;
   padding: 0.2rem 0;
-  transition: border-color 0.2s, color 0.2s;
+  transition: border-color var(--transition-speed),
+    color var(--transition-speed);
 }
 body.terminal .group-name-input:focus {
   outline: none;
-  border-bottom: 1px dashed var(--terminal-accent);
+  border-bottom: 1px dashed var(--accent-terminal);
 }
+
 body.terminal #sort-selector {
-  background-color: var(--terminal-bg-alt);
-  color: var(--terminal-text);
-  border: 1px solid var(--terminal-border);
-  transition: background-color 0.2s, border-color 0.2s;
+  background-color: var(--bg-terminal-alt);
+  color: var(--text-terminal);
+  border: 1px solid var(--border-terminal);
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
 }
 body.terminal #sort-selector:hover {
-  background-color: #222222;
+  background-color: var(--hover-terminal);
 }
 body.terminal #sort-selector:focus {
   outline: none;
-  border-color: var(--terminal-accent);
-  background-color: #1c1c1c;
+  border-color: var(--accent-terminal);
+  background-color: var(--drop-zone-highlight-terminal);
 }
+
 body.terminal .settings-grid label {
-  color: var(--terminal-text);
+  color: var(--text-terminal);
 }
 body.terminal .settings-grid input[type="number"],
 body.terminal .settings-grid select {
-  background-color: var(--terminal-bg-alt);
-  color: var(--terminal-text);
-  border: 1px solid var(--terminal-border);
-  transition: background-color 0.2s, border-color 0.2s;
+  background-color: var(--bg-terminal-alt);
+  color: var(--text-terminal);
+  border: 1px solid var(--border-terminal);
+  transition: background-color var(--transition-speed),
+    border-color var(--transition-speed);
 }
 body.terminal .settings-grid input[type="number"]:hover,
 body.terminal .settings-grid select:hover {
-  background-color: #222222;
+  background-color: var(--hover-terminal);
 }
 body.terminal .settings-grid input[type="number"]:focus,
 body.terminal .settings-grid select:focus {
   outline: none;
-  border-color: var(--terminal-accent);
-  background-color: #1c1c1c;
+  border-color: var(--accent-terminal);
+  background-color: var(--drop-zone-highlight-terminal);
 }
