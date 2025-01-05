@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="100" height="100"><svg id="SvgjsSvg1054" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <linearGradient id="SvgjsLinearGradient1053" x1="0" x2="1" y1="1" y2="0">
+      <stop id="SvgjsStop1052" stop-color="rgba(248, 117, 55, 1)" offset="0"></stop>
+      <stop id="SvgjsStop1051" stop-color="rgba(251, 168, 31, 1)" offset="1"></stop>
+    </linearGradient>
+    <bx:export>
+      <bx:file format="svg"></bx:file>
+    </bx:export>
+  </defs>
+  <g transform="matrix(1.59946, 0, 0, 1.59946, -27.02216, -20.022554)">
+    <path fill="url(#sw-gradient)" d="M 66.427 27.489 C 73.227 34.489 81.527 45.289 78.927 54.289 C 76.327 63.189 62.727 70.189 48.927 70.389 C 35.027 70.589 20.827 63.989 17.627 54.689 C 14.427 45.489 22.327 33.589 29.427 26.389 C 36.527 19.289 42.927 16.889 48.627 17.189 C 54.427 17.489 59.727 20.589 66.427 27.489 Z" stroke-width="0" style="transition: 0.3s;"></path>
+    <circle cx="39.227" cy="50.69" r="3" fill="rgba(209, 81, 21, 1)"></circle>
+    <circle cx="59.227" cy="50.69" r="3" fill="rgba(209, 81, 21, 1)"></circle>
+  </g>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>

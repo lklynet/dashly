@@ -201,7 +201,7 @@ function renderDashboard() {
 function createCard(domain) {
   const card = document.createElement("div");
   card.className = "card";
-  card.draggable = editMode; // Keep your drag logic
+  card.draggable = editMode; // Enable drag-and-drop in edit mode
   card.dataset.id = domain.id;
 
   const hostPort = `${domain.forward_host}:${domain.forward_port}`;
@@ -213,22 +213,30 @@ function createCard(domain) {
     statusClass = "yellow";
   }
 
-  // Keep your existing card layout
+  // Card content
   card.innerHTML = `
     <div class="status-dot ${statusClass}"></div>
     <h3>${domain.domain_names.join(", ")}</h3>
     <p>${hostPort}</p>
   `;
 
-  // If NOT in edit mode, add an invisible link overlay
+  // Add link overlay if not in edit mode
   if (!editMode) {
     const linkOverlay = document.createElement("a");
-    // Choose your preferred protocol or domain
-    linkOverlay.href = `http://${domain.domain_names.join(", ")}`;
-    linkOverlay.target = "_blank";
-    linkOverlay.rel = "noopener noreferrer";
-    // Give it a class so we can do minimal styling in CSS
-    linkOverlay.className = "card-overlay-link";
+    linkOverlay.href = `http://${domain.domain_names[0]}`; // Use the first domain name
+    linkOverlay.target = "_blank"; // Open in a new tab
+    linkOverlay.rel = "noopener noreferrer"; // Ensure security
+    linkOverlay.className = "card-link"; // Style the overlay
+
+    // Position the link overlay to cover the entire card
+    linkOverlay.style.position = "absolute";
+    linkOverlay.style.top = 0;
+    linkOverlay.style.left = 0;
+    linkOverlay.style.width = "100%";
+    linkOverlay.style.height = "100%";
+    linkOverlay.style.zIndex = 1; // Ensure it is above the card content
+    linkOverlay.style.textDecoration = "none";
+    linkOverlay.style.color = "inherit";
 
     card.appendChild(linkOverlay);
   }
