@@ -3,15 +3,28 @@
 </p>
 <h1 align="center">Dashly</h1>
 
-Dashly is a dynamic dashboard designed for Nginx Proxy Manager users, enabling automatic updates to homelab dashboards based on domain configurations. It eliminates the need for manually editing YAML files or forgetting to add new services, providing a seamless and intuitive experience.
+## What Dashly Is
 
-## Features
+**Dashly** is a lightweight, real-time dashboard for users of **Nginx Proxy Manager**. It simplifies how you monitor and organize your services by automatically syncing with your NPM database. This means you never have to manually edit dashboard configuration files like YAML—it dynamically tracks and displays all your services based on their domain configurations in NPM.
 
-- **Dynamic Updates**: Automatically syncs with your Nginx Proxy Manager database.
-- **Interactive UI**: Drag-and-drop functionality, customizable themes, and grid/list layouts.
-- **Groups and Sorting**: Organize services into groups, sort by domain name, status, or IP address.
-- **Search and Filter**: Quickly find services with an integrated search bar.
-- **Customizable Appearance**: Toggle themes, layouts, and visibility of inactive domains.
+## Core Features
+
+- **Dynamic Updates:**
+  - **Dashly** reads from the **Nginx Proxy Manager database**, automatically updating your dashboard whenever you add, remove, or modify domains.
+- **Interactive UI:**
+  - Organize services with drag-and-drop groups.
+  - Toggle between grid and list views.
+  - Search and filter services for quick access.
+- **Customizable Appearance:**
+  - Multiple themes, including a light and dark mode.
+  - Visibility toggles for inactive services.
+- **Group Management:**
+  - Categorize services into customizable groups.
+  - Rename and sort groups for easier navigation.
+
+## Why It's Useful
+
+If you use **Nginx Proxy Manager**, you likely already have domain names set up for your services. **Dashly** takes that data and creates a clean, automatically updating dashboard. It eliminates the repetitive task of manually maintaining dashboard YAML files for tools like **Dashy** or **Homepage**. **Dashly** is tailored for **NPM** users who value automation and simplicity.
 
 ## Screenshots
 
@@ -103,14 +116,9 @@ Dashly is an open-source project, and contributions are welcome! If you're inter
 - Message on X (Twitter) at [@lklynet](https://twitter.com/lklynet).
 - Email at [hi@lkly.net](mailto:hi@lkly.net).
 
-## Roadmap for Dashly.lkly.net
+## Live Demo
 
-The app is hosted at [dashly.lkly.net](https://dashly.lkly.net), will be featuring:
-
-- Screenshots and demos.
-- Comprehensive installation instructions.
-- A blog for updates and changes.
-- Full documentation for users and contributors.
+Try Dashly at [demo.dashly.lkly.net](demo.dashly.lkly.net)
 
 ## Contact
 
