@@ -1,6 +1,6 @@
 services:
   dashly:
-    image: lklynet/dashly:latest # Add explicit tag for clarity
+    image: lklynet/dashly:latest
     ports:
       - "${PORT:-8080}:8080" # User-configurable via .env
     environment:

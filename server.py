@@ -7,12 +7,12 @@ import time
 app = Flask(__name__, static_folder="static")
 
 SETTINGS_FILE = os.getenv("USER_SETTINGS_FILE", "/app/data/settings.json")
-NGINX_DB_PATH = os.getenv("NGINX_DB_PATH", "/nginx/database1.sqlite,/nginx/database2.sqlite").split(',')
+READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "/nginx/database.sqlite")
 
 os.makedirs(os.path.dirname(SETTINGS_FILE), exist_ok=True)
 
 print(f"Settings File: {SETTINGS_FILE}")
-print(f"Nginx DB Path: {NGINX_DB_PATH}")
+print(f"Read-Only DB Path: {READ_ONLY_DB_PATH}")
 
 DEFAULT_SETTINGS = {
     "theme": "light",
@@ -49,43 +49,36 @@ def save_settings(settings):
         json.dump(settings, f, indent=4)
 
 def refresh_cached_domains():
-    """Refresh the cached domains from all configured databases."""
-    unified_domains = []
-    for db_index, db_path in enumerate(NGINX_DB_PATH):
-        namespace = f"nginx{db_index + 1}"  # Namespace for each database
-        if not os.path.exists(db_path.strip()):
-            print(f"Database not found: {db_path.strip()}")
-            continue
+    """Refresh the cached domains from the database."""
+    if not os.path.exists(READ_ONLY_DB_PATH):
+        return {"error": "Database not found"}
 
-        try:
-            with sqlite3.connect(db_path.strip()) as conn:
-                cursor = conn.cursor()
-                query = """
-                    SELECT id, domain_names, forward_host, forward_port, meta, enabled 
-                    FROM proxy_host
-                    WHERE is_deleted = 0
-                """
-                cursor.execute(query)
-                rows = cursor.fetchall()
+    try:
+        with sqlite3.connect(READ_ONLY_DB_PATH) as conn:
+            cursor = conn.cursor()
+            query = """
+                SELECT id, domain_names, forward_host, forward_port, meta, enabled 
+                FROM proxy_host
+                WHERE is_deleted = 0
+            """
+            cursor.execute(query)
+            rows = cursor.fetchall()
 
-            unified_domains.extend([
-                {
-                    "id": f"{namespace}_{row[0]}",
-                    "domain_names": json.loads(row[1]),
-                    "forward_host": row[2],
-                    "forward_port": row[3],
-                    "nginx_online": json.loads(row[4]).get("nginx_online", False) if row[4] else False,
-                    "enabled": bool(row[5]),
-                    "source": namespace
-                }
-                for row in rows
-            ])
-        except Exception as e:
-            print(f"Error reading database {db_path}: {e}")
-    
-    cached_domains["domains"] = unified_domains
-    cached_domains["last_updated"] = time.time()
-    return cached_domains["domains"]
+        cached_domains["domains"] = [
+            {
+                "id": row[0],
+                "domain_names": json.loads(row[1]),
+                "forward_host": row[2],
+                "forward_port": row[3],
+                "nginx_online": json.loads(row[4]).get("nginx_online", False) if row[4] else False,
+                "enabled": bool(row[5])
+            }
+            for row in rows
+        ]
+        cached_domains["last_updated"] = time.time()
+        return cached_domains["domains"]
+    except Exception as e:
+        return {"error": "Failed to refresh domains", "details": str(e)}
 
 def get_cached_domains():
     """Return cached domains, refreshing if expired."""
@@ -94,7 +87,9 @@ def get_cached_domains():
         not cached_domains["last_updated"] or
         (time.time() - cached_domains["last_updated"] > CACHE_EXPIRY_SECONDS)
     ):
-        return refresh_cached_domains()
+        result = refresh_cached_domains()
+        if isinstance(result, dict) and "error" in result:
+            return result
     return cached_domains["domains"]
 
 settings = load_settings()
@@ -102,15 +97,17 @@ settings = load_settings()
 @app.route("/domains")
 def get_domains_endpoint():
     """Return cached domain data as a standalone endpoint."""
-    domains_result = get_cached_domains()
-    if isinstance(domains_result, dict) and "error" in domains_result:
-        return jsonify(domains_result), 500
-    return jsonify({"allDomains": domains_result})
+    cached_domains_result = get_cached_domains()
+    if isinstance(cached_domains_result, dict) and "error" in cached_domains_result:
+        return jsonify(cached_domains_result), 500
+    return jsonify({"allDomains": cached_domains_result})
 
 @app.route("/settings", methods=["GET"])
 def get_settings():
     """Return the user settings as JSON."""
     cached_domains_result = get_cached_domains()
+    if isinstance(cached_domains_result, dict) and "error" in cached_domains_result:
+        return jsonify(cached_domains_result), 500
     settings["allDomains"] = cached_domains_result
     return jsonify(settings)
 
@@ -135,30 +132,13 @@ def save_groups():
         data = request.json
         if not isinstance(data, dict):
             raise ValueError("Invalid data format")
-    except (ValueError, TypeError) as e:
-        return jsonify({"error": f"Invalid JSON data: {str(e)}"}), 400
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid JSON data"}), 400
 
-    # Debug: Log the received data
-    print("Received group data:", data)
-
-    # Sanitize groups to remove invalid entries
-    sanitized_groups = {}
-    for group, service_ids in data.get("groups", {}).items():
-        # Filter out `None` or empty strings
-        sanitized_groups[group] = [
-            service_id for service_id in service_ids if service_id and isinstance(service_id, str)
-        ]
-
-    # Debug: Log the sanitized groups
-    print("Sanitized groups:", sanitized_groups)
-
-    # Update settings
-    settings["groups"] = sanitized_groups
+    settings["groups"] = data.get("groups", settings["groups"])
     settings["renamedGroupNames"] = data.get("renamedGroupNames", settings["renamedGroupNames"])
     save_settings(settings)
-
-    # Return the updated settings
-    return jsonify({"message": "Groups updated successfully", "groups": settings["groups"]}), 200
+    return jsonify({"message": "Groups updated successfully"}), 200
 
 @app.route("/refresh-domains", methods=["POST"])
 def refresh_domains():
