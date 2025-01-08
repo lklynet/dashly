@@ -7,12 +7,12 @@ import time
 app = Flask(__name__, static_folder="static")
 
 SETTINGS_FILE = os.getenv("USER_SETTINGS_FILE", "/app/data/settings.json")
-NGINX_DB_PATHS = os.getenv("NGINX_DB_PATHS", "/nginx/database1.sqlite,/nginx/database2.sqlite").split(',')
+NGINX_DB_PATH = os.getenv("NGINX_DB_PATH", "/nginx/database1.sqlite,/nginx/database2.sqlite").split(',')
 
 os.makedirs(os.path.dirname(SETTINGS_FILE), exist_ok=True)
 
 print(f"Settings File: {SETTINGS_FILE}")
-print(f"Nginx DB Paths: {NGINX_DB_PATHS}")
+print(f"Nginx DB Path: {NGINX_DB_PATH}")
 
 DEFAULT_SETTINGS = {
     "theme": "light",
@@ -51,7 +51,7 @@ def save_settings(settings):
 def refresh_cached_domains():
     """Refresh the cached domains from all configured databases."""
     unified_domains = []
-    for db_index, db_path in enumerate(NGINX_DB_PATHS):
+    for db_index, db_path in enumerate(NGINX_DB_PATH):
         namespace = f"nginx{db_index + 1}"  # Namespace for each database
         if not os.path.exists(db_path.strip()):
             print(f"Database not found: {db_path.strip()}")
