@@ -21,23 +21,19 @@ function setupDragAndDrop() {
     dropZone.addEventListener("drop", async (event) => {
       event.preventDefault();
       dropZone.classList.remove("highlight");
-      const domainId = event.dataTransfer.getData("text/plain");
-      console.log("Dropped Domain ID:", domainId); // Debugging
-    
+      const domainId = parseInt(event.dataTransfer.getData("text/plain"), 10);
       const newGroup = dropZone.dataset.group;
-    
-      // Remove domain ID from all other groups
+
       Object.keys(groups).forEach((group) => {
         const index = groups[group].indexOf(domainId);
         if (index > -1) groups[group].splice(index, 1);
       });
-    
-      // Add domain ID to the new group if it's not already there
+
       if (!groups[newGroup].includes(domainId)) {
         groups[newGroup].push(domainId);
         await saveGroupsToJSON(groups);
       }
-    
+
       renderDashboard();
       setupDragAndDrop();
     });
