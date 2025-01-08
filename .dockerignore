@@ -1,14 +1,8 @@
-# Ignore the .git folder and Git-specific files
 .git
 .gitignore
-
-# Ignore node_modules and Python cache files if applicable
 node_modules/
 __pycache__/
-
-# Ignore system files
 *.log
 .DS_Store
-
 /data/
 /nginx/

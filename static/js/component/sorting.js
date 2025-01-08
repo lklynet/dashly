@@ -1,27 +1,19 @@
-let currentSortCriteria = "domain"; // Default sort option
-
-// Function to toggle between sort options
 function toggleSortCriteria() {
   const sortOptions = ["domain", "status", "ip"];
-  const currentIndex = sortOptions.indexOf(currentSortCriteria);
+  const currentIndex = sortOptions.indexOf(currentSettings.sortBy || "domain");
+  const newSortCriteria = sortOptions[(currentIndex + 1) % sortOptions.length];
 
-  // Cycle to the next option
-  currentSortCriteria = sortOptions[(currentIndex + 1) % sortOptions.length];
-
-  // Update the button text
-  const sortButton = document.getElementById("sort-toggle");
-  sortButton.textContent = `Sort: ${formatSortOption(currentSortCriteria)}`;
-
-  // Save the selected sort option persistently
-  saveSetting("sortBy", currentSortCriteria);
-
-  // Apply the new sorting criteria
-  sortDomains(currentSortCriteria); // Sort the services
-  renderDashboard(); // Re-render the dashboard with the updated sorting
-  setupDragAndDrop(); // Ensure drag-and-drop remains functional
+  updateSortButton(newSortCriteria);
+  sortDomains(newSortCriteria);
+  renderDashboard();
+  saveSettingsToJson({ sortBy: newSortCriteria });
 }
 
-// Function to format the sort option for button display
+function updateSortButton(criteria) {
+  const sortButton = document.getElementById("sort-toggle");
+  sortButton.textContent = `Sort: ${formatSortOption(criteria)}`;
+}
+
 function formatSortOption(option) {
   switch (option) {
     case "domain":
@@ -35,36 +27,63 @@ function formatSortOption(option) {
   }
 }
 
-// Apply the saved sort option on page load
+async function saveSettingsToJson() {
+  try {
+    await fetch("/save-settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(currentSettings),
+    });
+  } catch (error) {
+    console.error("Failed to save settings:", error);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
-  const settings = await fetchSettings(); // Fetch settings from the backend
-  currentSortCriteria = settings.sortBy || "domain"; // Load saved option or default to domain
+  try {
+    const settingsResponse = await fetch("/settings");
+    if (!settingsResponse.ok) throw new Error("Failed to fetch settings");
 
-  // Update the sort button text
-  const sortButton = document.getElementById("sort-toggle");
-  sortButton.textContent = `Sort: ${formatSortOption(currentSortCriteria)}`;
+    currentSettings = await settingsResponse.json();
+    currentSortCriteria = currentSettings.sortBy || "domain";
 
-  // Apply the saved sort criteria to the dashboard
-  sortDomains(currentSortCriteria);
-  renderDashboard();
+    const sortButton = document.getElementById("sort-toggle");
+    sortButton.textContent = `Sort: ${formatSortOption(currentSortCriteria)}`;
+
+    sortDomains(currentSortCriteria);
+    renderDashboard();
+  } catch (error) {
+    console.error("Error loading sort settings:", error);
+  }
 });
 
-// Set up the event listener for the sort button
-document.getElementById("sort-toggle").addEventListener("click", () => {
-  toggleSortCriteria();
-});
+document.getElementById("sort-toggle").addEventListener("click", toggleSortCriteria);
+
+async function updateSortSetting(criteria) {
+  try {
+    const updatedSettings = { sortBy: criteria };
+
+    await fetch("/save-settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedSettings),
+    });
+  } catch (error) {
+    console.error("Error updating sort settings:", error);
+  }
+}
 
 function sortDomains(criteria) {
-  // Sort services within each group
+  if (!groups || typeof groups !== "object") {
+    console.warn("Groups is not defined or not an object.");
+    return;
+  }
   Object.keys(groups).forEach((groupName) => {
     groups[groupName].sort((a, b) => {
       const domA = allDomains.find((d) => d.id === a);
       const domB = allDomains.find((d) => d.id === b);
 
-      // Handle cases where domains are not found
-      if (!domA || !domB) {
-        return 0; // Treat as equal if a domain is missing
-      }
+      if (!domA || !domB) return 0;
 
       switch (criteria) {
         case "domain":
@@ -80,10 +99,8 @@ function sortDomains(criteria) {
   });
 }
 
-// Helper function to rank statuses (if needed)
 function getStatusRank(domain) {
-  // Example rank: online = 0, partial = 1, offline = 2
-  if (domain.nginx_online && domain.enabled) return 0; // online
-  if (!domain.nginx_online && domain.enabled) return 1; // partial
-  return 2; // offline
+  if (domain.nginx_online && domain.enabled) return 0;
+  if (!domain.nginx_online && domain.enabled) return 1;
+  return 2;
 }

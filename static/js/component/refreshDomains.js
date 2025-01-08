@@ -1,38 +1,68 @@
-// refreshDomains.js
-
-document.addEventListener("DOMContentLoaded", () => {
-  fetchDomainsOnRefresh(); // Fetch and render domains on page load
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await fetchDomainsOnRefresh();
+  } catch (error) {
+    console.error("Error during domain refresh:", error);
+  }
 });
 
 async function fetchDomainsOnRefresh() {
   try {
     const response = await fetch("/domains");
+    if (!response.ok) {
+      throw new Error("Failed to fetch domains.");
+    }
+
     const data = await response.json();
 
-    // Ensure there is a default group to add new domains to
+    const settingsResponse = await fetch("/settings");
+    if (!settingsResponse.ok) {
+      throw new Error("Failed to fetch current settings.");
+    }
+
+    const settings = await settingsResponse.json();
+    groups = settings.groups || { "New Services": [] };
+    allDomains = settings.allDomains || [];
+
     const defaultGroup = Object.keys(groups)[0] || "New Services";
     if (!groups[defaultGroup]) {
       groups[defaultGroup] = [];
     }
 
-    // Detect and process new domains
-    data.domains.forEach((domain) => {
-      // Check if the domain is already in allDomains
+    data.allDomains.forEach((domain) => {
       const isExisting = allDomains.some((d) => d.id === domain.id);
+
       if (!isExisting) {
-        allDomains.push(domain); // Add to global domain list
-        groups[defaultGroup].push(domain.id); // Add to the default group
+        allDomains.push(domain);
+        groups[defaultGroup].push(domain.id);
       }
     });
 
-    saveSetting("groups", groups); // Persist the updated groups
-    renderDashboard(); // Re-render the dashboard with the new data
+    const sortBy = settings.sortBy || "domain";
+    sortDomains(sortBy);
+
+    await saveSettingsToJSON({ groups, allDomains });
+
+    renderDashboard();
   } catch (error) {
     console.error("Error fetching domains on refresh:", error);
   }
 }
 
+async function saveSettingsToJSON(updatedSettings) {
+  try {
+    await fetch("/save-settings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedSettings),
+    });
+  } catch (error) {
+    console.error("Failed to save settings to JSON:", error);
+  }
+}
+
 function determineGroupForDomain(domain) {
-  // Default logic for group assignment based on domain status
   return domain.enabled ? "Active Domains" : "Inactive Domains";
 }

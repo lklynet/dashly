@@ -1,193 +1,173 @@
-from flask import Flask, jsonify, send_from_directory, request # type: ignore
-import sqlite3
+from flask import Flask, jsonify, send_from_directory, request
 import json
 import os
+import sqlite3
+import time
 
 app = Flask(__name__, static_folder="static")
 
-# Hardcoded paths match the mounted volumes
-import os
-
-# Ensure paths are absolute
+SETTINGS_FILE = os.getenv("USER_SETTINGS_FILE", "/app/data/settings.json")
 READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "/nginx/database.sqlite")
-user_settings_env = os.getenv("USER_SETTINGS", "data")
-if not os.path.isabs(user_settings_env):
-    user_settings_env = os.path.join("/", user_settings_env)
 
-USER_SETTINGS_DB = os.path.join(user_settings_env, "user_settings.db")
+os.makedirs(os.path.dirname(SETTINGS_FILE), exist_ok=True)
 
-# Ensure the directory exists
-user_settings_dir = os.path.dirname(USER_SETTINGS_DB)
-os.makedirs(user_settings_dir, exist_ok=True)
+print(f"Settings File: {SETTINGS_FILE}")
+print(f"Read-Only DB Path: {READ_ONLY_DB_PATH}")
 
-# Log paths for debugging (optional)
-print(f"READ_ONLY_DB_PATH: {READ_ONLY_DB_PATH}")
-print(f"USER_SETTINGS_DB: {USER_SETTINGS_DB}")
+DEFAULT_SETTINGS = {
+    "theme": "light",
+    "hideInactive": False,
+    "hideSearch": False,
+    "layoutView": "list",
+    "sortBy": "domain",
+    "maxColumns": 3,
+    "groups": {},
+    "renamedGroupNames": {}
+}
 
-def init_user_settings_db():
-    print("Initializing user_settings.db")  # Debug Log
-    conn = sqlite3.connect(USER_SETTINGS_DB)
-    c = conn.cursor()
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS app_settings (
-            id INTEGER PRIMARY KEY,
-            settings_json TEXT
-        )
-    """)
-    c.execute("SELECT COUNT(*) FROM app_settings")
-    count = c.fetchone()[0]
-    if count == 0:
-        print("Inserting default settings.")  # Debug Log
-        default_settings = {
-            "theme": "light",
-            "hideInactive": False,
-            "hideSearch": False,
-            "layoutView": "list",
-            "sortBy": "domain",
-            "maxColumns": 3,
-            "groups": {},  # Add groups here
-            "renamedGroupNames": {}
-        }
-        c.execute("INSERT INTO app_settings (id, settings_json) VALUES (?, ?)",
-                  (1, json.dumps(default_settings)))
-    conn.commit()
-    conn.close()
+cached_domains = {
+    "domains": [],
+    "last_updated": None
+}
+CACHE_EXPIRY_SECONDS = 15
 
-def init_user_settings_db():
-    print("Initializing user_settings.db")  # Debug Log
-    conn = sqlite3.connect(USER_SETTINGS_DB)
-    c = conn.cursor()
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS app_settings (
-            id INTEGER PRIMARY KEY,
-            settings_json TEXT
-        )
-    """)
-    c.execute("SELECT COUNT(*) FROM app_settings")
-    count = c.fetchone()[0]
-    if count == 0:
-        print("Inserting default settings.")  # Debug Log
-        default_settings = {
-            "theme": "light",
-            "hideInactive": False,
-            "hideSearch": False,
-            "layoutView": "list",
-            "sortBy": "domain",
-            "maxColumns": 3,
-            "groups": {},
-            "renamedGroupNames": {}
-        }
-        c.execute("INSERT INTO app_settings (id, settings_json) VALUES (?, ?)",
-                  (1, json.dumps(default_settings)))
-    conn.commit()
-    conn.close()
+def load_settings():
+    """Load settings from the JSON file or initialize with defaults."""
+    if not os.path.exists(SETTINGS_FILE):
+        save_settings(DEFAULT_SETTINGS)
+    try:
+        with open(SETTINGS_FILE, "r") as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        save_settings(DEFAULT_SETTINGS)
+        return DEFAULT_SETTINGS
 
+def save_settings(settings):
+    """Save settings to the JSON file."""
+    settings.pop("domains", None)
+    with open(SETTINGS_FILE, "w") as f:
+        json.dump(settings, f, indent=4)
+
+def refresh_cached_domains():
+    """Refresh the cached domains from the database."""
+    if not os.path.exists(READ_ONLY_DB_PATH):
+        return {"error": "Database not found"}
+
+    try:
+        with sqlite3.connect(READ_ONLY_DB_PATH) as conn:
+            cursor = conn.cursor()
+            query = """
+                SELECT id, domain_names, forward_host, forward_port, meta, enabled 
+                FROM proxy_host
+                WHERE is_deleted = 0
+            """
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+        cached_domains["domains"] = [
+            {
+                "id": row[0],
+                "domain_names": json.loads(row[1]),
+                "forward_host": row[2],
+                "forward_port": row[3],
+                "nginx_online": json.loads(row[4]).get("nginx_online", False) if row[4] else False,
+                "enabled": bool(row[5])
+            }
+            for row in rows
+        ]
+        cached_domains["last_updated"] = time.time()
+        return cached_domains["domains"]
+    except Exception as e:
+        return {"error": "Failed to refresh domains", "details": str(e)}
+
+def get_cached_domains():
+    """Return cached domains, refreshing if expired."""
+    if (
+        not cached_domains["domains"] or
+        not cached_domains["last_updated"] or
+        (time.time() - cached_domains["last_updated"] > CACHE_EXPIRY_SECONDS)
+    ):
+        result = refresh_cached_domains()
+        if isinstance(result, dict) and "error" in result:
+            return result
+    return cached_domains["domains"]
+
+settings = load_settings()
 
 @app.route("/domains")
-def get_domains():
-    """
-    Fetch domain info from the read-only DB (database.sqlite).
-    """
-    conn = sqlite3.connect(READ_ONLY_DB_PATH)
-    cursor = conn.cursor()
-    query = """
-        SELECT id, domain_names, forward_host, forward_port, meta, enabled 
-        FROM proxy_host
-        WHERE is_deleted = 0
-    """
-    cursor.execute(query)
-    rows = cursor.fetchall()
-    conn.close()
+def get_domains_endpoint():
+    """Return cached domain data as a standalone endpoint."""
+    cached_domains_result = get_cached_domains()
+    if isinstance(cached_domains_result, dict) and "error" in cached_domains_result:
+        return jsonify(cached_domains_result), 500
+    return jsonify({"allDomains": cached_domains_result})
 
-    domains = []
-    for row in rows:
-        domain = {
-            "id": row[0],
-            "domain_names": json.loads(row[1]),
-            "forward_host": row[2],
-            "forward_port": row[3],
-            "nginx_online": json.loads(row[4]).get("nginx_online", False) if row[4] else False,
-            "enabled": bool(row[5])
-        }
-        domains.append(domain)
+@app.route("/settings", methods=["GET"])
+def get_settings():
+    """Return the user settings as JSON."""
+    cached_domains_result = get_cached_domains()
+    if isinstance(cached_domains_result, dict) and "error" in cached_domains_result:
+        return jsonify(cached_domains_result), 500
+    settings["allDomains"] = cached_domains_result
+    return jsonify(settings)
 
-    return jsonify({"domains": domains})
-
-@app.route("/appsettings", methods=["GET"])
-def get_app_settings():
-    """
-    Return the user settings from user_settings.db as JSON.
-    """
-    conn = sqlite3.connect(USER_SETTINGS_DB)
-    c = conn.cursor()
-    c.execute("SELECT settings_json FROM app_settings WHERE id=1")
-    row = c.fetchone()
-    conn.close()
-
-    if row:
-        settings_data = json.loads(row[0])
-        return jsonify(settings_data)
-    else:
-        # If for some reason the row doesn't exist, we can return defaults or an error
-        return jsonify({"error": "Settings not found"}), 404
-
-@app.route("/appsettings", methods=["POST"])
-def update_app_settings():
-    """
-    Update the user settings in user_settings.db from request body JSON.
-    """
+@app.route("/save-settings", methods=["POST"])
+def update_settings():
+    """Update settings in the JSON file."""
     try:
-        new_settings = request.json  # Expect a JSON body
-    except Exception as e:
-        return jsonify({"error": "Invalid JSON"}), 400
+        new_settings = request.json
+        if not isinstance(new_settings, dict):
+            raise ValueError("Invalid data format")
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid JSON data"}), 400
 
-    # Validate or sanitize new_settings as needed (omitted here for brevity)
-
-    # Save to DB
-    conn = sqlite3.connect(USER_SETTINGS_DB)
-    c = conn.cursor()
-    c.execute("UPDATE app_settings SET settings_json = ? WHERE id=1",
-              (json.dumps(new_settings),))
-    conn.commit()
-    conn.close()
-
+    settings.update(new_settings)
+    save_settings(settings)
     return jsonify({"message": "Settings updated successfully"}), 200
+
+@app.route("/save-groups", methods=["POST"])
+def save_groups():
+    """Save groups and optionally renamedGroupNames."""
+    try:
+        data = request.json
+        if not isinstance(data, dict):
+            raise ValueError("Invalid data format")
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    settings["groups"] = data.get("groups", settings["groups"])
+    settings["renamedGroupNames"] = data.get("renamedGroupNames", settings["renamedGroupNames"])
+    save_settings(settings)
+    return jsonify({"message": "Groups updated successfully"}), 200
+
+@app.route("/refresh-domains", methods=["POST"])
+def refresh_domains():
+    """Manually refresh the domain cache."""
+    refresh_result = refresh_cached_domains()
+    if isinstance(refresh_result, dict) and "error" in refresh_result:
+        return jsonify(refresh_result), 500
+    return jsonify({"message": "Domains refreshed successfully", "allDomains": refresh_result})
 
 @app.route("/")
 def serve_frontend():
-    # Fetch the saved theme from the database
-    conn = sqlite3.connect(USER_SETTINGS_DB)
-    c = conn.cursor()
-    c.execute("SELECT settings_json FROM app_settings WHERE id=1")
-    row = c.fetchone()
-    conn.close()
+    """Serve the main frontend HTML with theme injected."""
+    saved_theme = settings.get("theme", "light")
+    index_path = os.path.join(app.static_folder, "index.html")
 
-    # Default to "light" theme if no settings are found
-    saved_theme = "light"
-    if row:
-        settings = json.loads(row[0])
-        saved_theme = settings.get("theme", "light")
+    if not os.path.exists(index_path):
+        return jsonify({"error": "index.html not found"}), 500
 
-    # Read the index.html file and inject the theme into the <script> tag
-    with open(os.path.join(app.static_folder, "index.html")) as f:
+    with open(index_path) as f:
         html_content = f.read()
 
-    # Replace the {{theme}} placeholder in the inline script
     html_content = html_content.replace("{{theme}}", saved_theme)
-
-    # Return the modified HTML
     return html_content
-
-
-
 
 @app.route("/<path:path>")
 def serve_static_files(path):
-    # Serve other static files (e.g., CSS, JS)
+    """Serve static files (e.g., CSS, JS)."""
     return send_from_directory(app.static_folder, path)
 
 if __name__ == "__main__":
-    # Initialize the user settings DB/tables
-    init_user_settings_db()
-    
-    app.run(host="0.0.0.0", port=8080)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8080)

@@ -1,9 +1,14 @@
 services:
   dashly:
-    image: lklynet/dashly
+    image: lklynet/dashly:latest # Add explicit tag for clarity
     ports:
-      - "8080:8080"
+      - "${PORT:-8080}:8080" # User-configurable via .env
+    environment:
+      - NGINX_DB_PATH=/nginx/database.sqlite # Must not change
+      - USER_SETTINGS_FILE=/data/settings.json # Must not change
     volumes:
-      - ${NGINX_DB_PATH}:/nginx/database.sqlite:ro
-      - ${USER_SETTINGS}:/data
+      - ${NGINX_DB_PATH}:/nginx/database.sqlite:ro # External database
+      - ${USER_SETTINGS:-./data}:/data # Defaults to internal ./data
     restart: unless-stopped
+    env_file:
+      - .env # Recommended for customization

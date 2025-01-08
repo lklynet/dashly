@@ -1,114 +1,105 @@
-// Centralize globally accessible settings and functions
-let currentSettings = {}; // In-memory store for all settings
+let currentSettings = {};
 
-// Constants for setting keys
-const SETTINGS_KEYS = {
-  THEME: "theme",
-  LAYOUT_VIEW: "layoutView",
-  HIDE_SEARCH: "hideSearch",
-  HIDE_INACTIVE: "hideInactive",
-  GROUPS: "groups", // Added groups as a setting key
-};
-
-// Fetch settings from the server
 async function fetchSettings() {
   try {
-    const response = await fetch("/appsettings");
-    if (response.ok) {
-      const settings = await response.json();
-      currentSettings = settings; // Store in memory
-      Object.keys(settings).forEach((key) => {
-        localStorage.setItem(key, JSON.stringify(settings[key])); // Cache in localStorage
-      });
-      console.log("Loaded settings:", settings);
-      return settings;
-    } else {
-      console.error("Failed to fetch settings:", await response.text());
-    }
+    const response = await fetch("/settings");
+    if (!response.ok) throw new Error("Failed to fetch settings.");
+    currentSettings = await response.json();
+    return currentSettings;
   } catch (error) {
     console.error("Error fetching settings:", error);
-  }
-  return {};
-}
-
-// Save a specific setting to the server and localStorage
-async function saveSetting(key, value) {
-  try {
-    currentSettings[key] = value; // Update in-memory settings
-    localStorage.setItem(key, JSON.stringify(value)); // Update localStorage
-    const response = await fetch("/appsettings", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(currentSettings), // Send updated settings to server
-    });
-    if (response.ok) {
-      console.log(`Setting saved: ${key} = ${value}`);
-    } else {
-      console.error("Failed to save setting:", await response.text());
-    }
-  } catch (error) {
-    console.error("Error saving setting:", error);
+    return {};
   }
 }
 
-// Save groups to the backend (utility function for convenience)
-async function saveGroups(groups) {
-  await saveSetting(SETTINGS_KEYS.GROUPS, groups);
-}
-
-// Apply all settings to the UI
-function applySettings() {
-  Object.keys(currentSettings).forEach((key) => {
+function applySettings(updatedKeys = Object.keys(currentSettings)) {
+  updatedKeys.forEach((key) => {
     const value = currentSettings[key];
 
-    // Handle theme
-    if (key === SETTINGS_KEYS.THEME) {
-      document.body.className = ""; // Clear classes
-      if (value !== "light") {
-        document.body.classList.add(value);
-      }
-      const themeButton = document.getElementById("theme-toggle");
-      if (themeButton) {
-        themeButton.textContent = value[0].toUpperCase() + value.slice(1);
-      }
-    }
+    switch (key) {
+      case "theme":
+        document.body.className = value !== "light" ? value : "";
+        document.getElementById("theme-toggle").textContent =
+          value[0].toUpperCase() + value.slice(1);
+        break;
 
-    // Handle layout
-    if (key === SETTINGS_KEYS.LAYOUT_VIEW) {
-      const dashboard = document.getElementById("dashboard");
-      if (value === "grid") {
-        dashboard.classList.add("grid-view");
-        dashboard.classList.remove("list-view");
-      } else {
-        dashboard.classList.add("list-view");
-        dashboard.classList.remove("grid-view");
-      }
-    }
+      case "layoutView":
+        const dashboard = document.getElementById("dashboard");
+        dashboard.classList.toggle("grid-view", value === "grid");
+        dashboard.classList.toggle("list-view", value === "list");
+        break;
 
-    // Handle groups
-    if (key === SETTINGS_KEYS.GROUPS) {
-      groups = value || {}; // Set groups or default
-      renderDashboard(); // Re-render with loaded groups
-    }
+      case "groups":
+        groups = value || { "New Services": [] };
+        renderDashboard();
+        break;
 
-    // Add additional settings logic as needed...
+      case "maxColumns":
+        maxColumns = value || 3;
+        updateGridTemplate(Object.keys(groups).length);
+        break;
+
+      case "hideSearch":
+        const searchBar = document.getElementById("search");
+        searchBar.classList.toggle("hidden", value);
+        document.getElementById("toggle-search").textContent = value
+          ? "Show Search Bar"
+          : "Hide Search Bar";
+        break;
+
+      case "hideInactive":
+        showInactive = !value;
+        document.getElementById("toggle-inactive").textContent = showInactive
+          ? "Hide Inactive Domains"
+          : "Show Inactive Domains";
+        break;
+
+      case "sortBy":
+        currentSettings.sortBy = value || "domain";
+        const sortButton = document.getElementById("sort-toggle");
+        if (sortButton) {
+          sortButton.textContent = `Sort: ${formatSortOption(currentSettings.sortBy)}`;
+        }
+        sortDomains(currentSettings.sortBy);
+        break;
+
+      case "allDomains":
+        allDomains = value || [];
+        break;
+
+      case "renamedGroupNames":
+        renamedGroupNames = value || {};
+        break;
+
+      default:
+        console.warn(`Unhandled setting key: "${key}"`);
+    }
   });
-
-  console.log("Applied settings to UI:", currentSettings);
 }
 
-// Initialize settings on page load
-document.addEventListener("DOMContentLoaded", async () => {
-  // Check localStorage for saved theme and apply immediately to avoid flash
-  const savedTheme = localStorage.getItem(SETTINGS_KEYS.THEME);
-  if (savedTheme) {
-    document.body.className = ""; // Clear classes
-    if (savedTheme !== "light") {
-      document.body.classList.add(JSON.parse(savedTheme));
-    }
-  }
+async function saveSettingsToJson(updates = {}) {
+  try {
+    Object.assign(currentSettings, updates);
 
-  // Fetch remaining settings from server and apply them
-  const settings = await fetchSettings();
-  applySettings();
+    const response = await fetch("/save-settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(currentSettings),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to save settings:", await response.text());
+    }
+  } catch (error) {
+    console.error("Error saving settings:", error);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    currentSettings = await fetchSettings();
+    applySettings();
+  } catch (error) {
+    console.error("Initialization failed:", error);
+  }
 });

@@ -1,12 +1,8 @@
-// Initialize layout view
-let currentLayout = localStorage.getItem("layoutView")
-  ? JSON.parse(localStorage.getItem("layoutView"))
-  : "list"; // Default view
+let currentLayout = "list";
 
 const layoutToggleButton = document.getElementById("toggle-layout");
 const dashboard = document.getElementById("dashboard");
 
-// Function to apply layout and update button text
 function applyLayout(layout) {
   if (layout === "grid") {
     dashboard.classList.add("grid-view");
@@ -19,19 +15,57 @@ function applyLayout(layout) {
   }
 }
 
-// On page load, apply the saved or default layout
 document.addEventListener("DOMContentLoaded", async () => {
-  const settings = await fetchSettings(); // Fetch settings from usersettings.js
-  currentLayout = settings.layoutView || currentLayout; // Use saved layout or fallback to default
-  applyLayout(currentLayout); // Apply the layout
+  try {
+    const settings = await fetchSettings();
+    currentLayout = settings.layoutView || currentLayout;
+    applyLayout(currentLayout);
+  } catch (error) {
+    console.error("Error fetching layout settings:", error);
+  }
 });
 
-// Event listener for toggling the layout
 layoutToggleButton.addEventListener("click", async () => {
-  // Toggle layout
   currentLayout = currentLayout === "list" ? "grid" : "list";
   applyLayout(currentLayout);
 
-  // Save the layout setting
-  await saveSetting("layoutView", currentLayout);
+  try {
+    await saveLayoutToJSON(currentLayout);
+  } catch (error) {
+    console.error("Error saving layout setting:", error);
+  }
 });
+
+async function saveLayoutToJSON(layout) {
+  try {
+    await fetch("/save-settings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ layoutView: layout }),
+    });
+  } catch (error) {
+    throw new Error("Failed to save layout setting to JSON.");
+  }
+}
+
+async function toggleMaxColumns() {
+  maxColumns = maxColumns === 3 ? 1 : maxColumns + 1;
+
+  const maxColumnsButton = document.getElementById("max-columns-toggle");
+  maxColumnsButton.textContent = `Columns: ${maxColumns}`;
+
+  try {
+    await fetch("/save-settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ maxColumns }),
+    });
+    renderDashboard();
+  } catch (error) {
+    console.error("Error updating max columns:", error);
+  }
+}
+
+document.getElementById("max-columns-toggle")?.addEventListener("click", toggleMaxColumns);

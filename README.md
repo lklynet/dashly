@@ -9,6 +9,8 @@
 
 ![2025-01-05](/static/assets/hero.png)
 
+---
+
 ## Core Features
 
 - **Dynamic Updates:**
@@ -24,9 +26,13 @@
   - Categorize services into customizable groups.
   - Rename and sort groups for easier navigation.
 
+---
+
 ## Why It's Useful
 
 If you use **Nginx Proxy Manager**, you likely already have domain names set up for your services. **Dashly** takes that data and creates a clean, automatically updating dashboard. It eliminates the repetitive task of manually maintaining dashboard YAML files for tools like **Dashy** or **Homepage**. **Dashly** is tailored for **NPM** users who value automation and simplicity.
+
+---
 
 ## Screenshots
 
@@ -37,14 +43,30 @@ If you use **Nginx Proxy Manager**, you likely already have domain names set up 
   <img src="/static/assets/screenshot4.png" alt="Dashly Screenshot 4" width="200">
 </p>
 
+---
+
+## Tech Stack
+
+- **Backend:** Python, Flask
+- **Frontend:** HTML, CSS, JavaScript
+- **Web Server:** Waitress
+- **Database:** SQLite (via Nginx Proxy Manager)
+- **Deployment:** Docker, Docker Compose
+- **Version Control:** Git, GitHub
+
+---
+
 ## Future Roadmap
 
+- Allowing multiple nginx databases.
 - Add a "Favorites" group for quick access to preferred services.
 - Enable hiding groups or individual services.
 - Support for custom app icons and renaming services.
 - Enhance drag-and-drop functionality for smoother interaction.
 - Introduce collapsible groups for better organization.
 - Toggle displayed information for a cleaner look.
+
+---
 
 ## Getting Started
 
@@ -67,7 +89,8 @@ If you use **Nginx Proxy Manager**, you likely already have domain names set up 
 
    ```bash
    echo "NGINX_DB_PATH=/path/to/your/nginx/database.sqlite" >> .env
-   echo "USER_SETTINGS=/data/" >> .env
+   echo "USER_SETTINGS=/data/" >> .env # OPTIONAL
+   echo "PORT=8080" >> .env # OPTIONAL
    ```
 
 3. Download the `docker-compose.yml` file:
@@ -90,6 +113,8 @@ If you use **Nginx Proxy Manager**, you likely already have domain names set up 
 
 5. Access the dashboard at [http://localhost:8080](http://localhost:8080).
 
+---
+
 ## Troubleshooting
 
 If the app isn't running, has database errors, or doesn't show any services:
@@ -105,10 +130,12 @@ If the app isn't running, has database errors, or doesn't show any services:
    ```bash
    apt update && apt upgrade -y
    apt install python3 sqlite3
-   pip3 install flask
+   pip3 install flask waitress
    ```
 
    Then rebuild or update the container, and it should start right up.
+
+---
 
 ## Contributing
 
@@ -117,10 +144,15 @@ Dashly is an open-source project, and contributions are welcome! If you're inter
 - Submit pull requests to add features or fix bugs.
 - Message on X (Twitter) at [@lklynet](https://twitter.com/lklynet).
 - Email at [hi@lkly.net](mailto:hi@lkly.net).
+- Donate: [Buy me a coffee! ☕](https://buymeacoffee.com/lkly).
+
+---
 
 ## Live Demo
 
 Try Dashly at [demo.dashly.lkly.net](demo.dashly.lkly.net)
+
+---
 
 ## Contact
 
@@ -129,4 +161,4 @@ For feedback, questions, or collaboration opportunities:
 - X (Twitter): [@lklynet](https://twitter.com/lklynet)
 - Email: [hi@lkly.net](mailto:hi@lkly.net)
 
-Thank you for checking out Dashly! Let's make it the best it can be together.
+  Thank you for checking out Dashly! Let's make it the best it can be together.

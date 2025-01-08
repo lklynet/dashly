@@ -1,117 +1,69 @@
-// Initialize state variables
-let showInactive = true; // Toggle for inactive domains
-let showSearch = true; // Toggle for search bar
-let allDomains = []; // Store all domains
-let editMode = false; // Edit Mode toggle state
-let groups = { "New Services": [] }; // Stores groups and their associated domain IDs
-let allServicesGroupName = "New Services"; // Track the current name of the "New Services" group
-let maxColumns = 3; // Default max columns for groups
+let showInactive, showSearch, allDomains, editMode, groups, allServicesGroupName, maxColumns, currentSortCriteria;
 
-const gridcontainer = document.getElementById("dashboard");
+const DEFAULT_SETTINGS = {
+  groups: { "New Services": [] },
+  domains: [],
+  maxColumns: 3,
+  hideInactive: false,
+  sortBy: "domain",
+  renamedGroupNames: { allServices: "New Services" },
+};
 
-let groupCount = 0;
-function calculateWidth(groupsInRow) {
-  return 100 / groupsInRow + "%";
-}
-
-// Fetch and render the dashboard
 async function fetchAndRender() {
   try {
-    // Fetch user settings from the backend
     const settings = await fetchSettings();
-    maxColumns = settings.maxColumns || 3; // Load max columns or default to 3
-    const maxColumnsButton = document.getElementById("max-columns-toggle");
-    maxColumnsButton.textContent = `Columns: ${maxColumns}`;
-    showInactive = !settings.hideInactive; // Invert because "hideInactive" means hidden
-    currentSortCriteria = settings.sortBy || "domain"; // Load sort criteria or default to domain
 
-    // Update the sort button text
-    const sortButton = document.getElementById("sort-toggle");
-    sortButton.textContent = `Sort: ${formatSortOption(currentSortCriteria)}`;
+    groups = settings.groups || DEFAULT_SETTINGS.groups;
+    allDomains = settings.domains || DEFAULT_SETTINGS.domains;
+    maxColumns = settings.maxColumns || DEFAULT_SETTINGS.maxColumns;
+    showInactive = !settings.hideInactive;
+    allServicesGroupName =
+      settings.renamedGroupNames?.allServices || DEFAULT_SETTINGS.renamedGroupNames.allServices;
 
-    // Update the "Hide Inactive Domains" button text
-    const toggleInactiveButton = document.getElementById("toggle-inactive");
-    toggleInactiveButton.textContent = showInactive
+    if (!groups[allServicesGroupName]) {
+      groups[allServicesGroupName] = allDomains.map((domain) => domain.id);
+    }
+
+    document.getElementById("max-columns-toggle").textContent = `Columns: ${maxColumns}`;
+    document.getElementById("toggle-inactive").textContent = showInactive
       ? "Hide Inactive Domains"
       : "Show Inactive Domains";
 
-    document
-      .getElementById("max-columns-toggle")
-      .addEventListener("click", () => {
-        toggleMaxColumns();
-      });
+    const sortButton = document.getElementById("sort-toggle");
+    sortButton.textContent = `Sort: ${formatSortOption(currentSettings.sortBy || "domain")}`;
 
-    // Fetch domain data from the server
-    const response = await fetch("/domains");
-    const { domains } = await response.json();
-    allDomains = domains; // Store all domains
-
-    // Initialize groups
-    groups = settings.groups || {};
-    let allServicesGroupName =
-      settings.renamedGroupNames?.allServices || "New Services";
-
-    // Check if the renamed "New Services" group exists
-    if (!groups[allServicesGroupName]) {
-      groups[allServicesGroupName] = domains.map((domain) => domain.id); // Populate with all domain IDs
-    }
-
-    // Save updated settings to ensure "New Services" persists under the renamed name
-    saveSetting("groups", groups);
-    saveSetting("renamedGroupNames", {
-      ...settings.renamedGroupNames,
-      allServices: allServicesGroupName,
-    });
-
-    // Render the dashboard
-    sortDomains(currentSortCriteria);
     renderDashboard();
-    setupEventListeners(); // Set up event listeners
-    setupDragAndDrop(); // Set up drag-and-drop functionality
+    setupEventListeners();
+    setupDragAndDrop();
   } catch (error) {
-    console.error("Error fetching or rendering data:", error);
+    console.error("Error fetching and rendering settings:", error);
   }
 }
 
 function toggleMaxColumns() {
-  // Cycle through 1, 2, 3 columns
   maxColumns = maxColumns === 3 ? 1 : maxColumns + 1;
 
-  // Update the button text
-  const maxColumnsButton = document.getElementById("max-columns-toggle");
-  maxColumnsButton.textContent = `Columns: ${maxColumns}`;
-
-  // Save the setting persistently
-  saveSetting("maxColumns", maxColumns);
-
-  // Re-render the dashboard with the new column layout
+  document.getElementById("max-columns-toggle").textContent = `Columns: ${maxColumns}`;
+  saveSettingsToJson();
   renderDashboard();
 }
 
-// Update the grid template dynamically
 function updateGridTemplate(groupCount) {
   const dashboard = document.getElementById("dashboard");
-
-  // Reset the grid layout
   dashboard.style.display = "grid";
   dashboard.style.gridGap = "1rem";
 
   if (groupCount <= maxColumns) {
-    // If fewer groups than maxColumns, make each group fill proportionally
     dashboard.style.gridTemplateColumns = `repeat(${groupCount}, 1fr)`;
   } else {
-    // Distribute columns evenly across maxColumns, wrapping naturally
     dashboard.style.gridTemplateColumns = `repeat(${maxColumns}, 1fr)`;
   }
-
-  // Let rows dynamically adjust heights
   dashboard.style.gridAutoRows = "auto";
 }
 
-// Render the dashboard with groups
 function renderDashboard() {
   const dashboard = document.getElementById("dashboard");
-  dashboard.innerHTML = ""; // Clear the grid
+  dashboard.innerHTML = "";
 
   const groupCount = Object.keys(groups).length;
   updateGridTemplate(groupCount);
@@ -166,17 +118,11 @@ function renderDashboard() {
     dashboard.appendChild(groupContainer);
   });
 
-  // Handle ungrouped domains
   const ungroupedDomains = allDomains.filter((domain) => {
     return !Object.values(groups).some((group) => group.includes(domain.id));
   });
 
   if (ungroupedDomains.length > 0) {
-    console.log(
-      "Adding ungrouped domains to 'New Services':",
-      ungroupedDomains
-    );
-
     const defaultGroup = "New Services";
     if (!groups[defaultGroup]) {
       groups[defaultGroup] = [];
@@ -186,7 +132,7 @@ function renderDashboard() {
       groups[defaultGroup].push(domain.id);
     });
 
-    saveSetting("groups", groups); // Persist changes
+    saveSettingsToJson();
   }
 
   if (editMode) {
@@ -194,52 +140,32 @@ function renderDashboard() {
     setupDeleteGroupButtons();
   }
 
-  setupDragAndDrop(); // Ensure drag-and-drop functionality
+  setupDragAndDrop();
 }
 
-// Create Card
-function createCard(domain) {
-  const card = document.createElement("div");
-  card.className = "card";
-  card.draggable = editMode; // Enable drag-and-drop in edit mode
-  card.dataset.id = domain.id;
+async function saveSettingsToJson() {
+  const settings = {
+    groups,
+    domains: allDomains,
+    maxColumns,
+    hideInactive: !showInactive,
+    sortBy: currentSortCriteria,
+    renamedGroupNames: { allServices: allServicesGroupName },
+  };
 
-  const hostPort = `${domain.forward_host}:${domain.forward_port}`;
+  try {
+    const response = await fetch("/save-settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(settings),
+    });
 
-  let statusClass = "red";
-  if (domain.nginx_online && domain.enabled) {
-    statusClass = "green";
-  } else if (!domain.nginx_online && domain.enabled) {
-    statusClass = "yellow";
+    if (!response.ok) {
+      console.error("Failed to save settings:", await response.text());
+    }
+  } catch (error) {
+    console.error("Error saving settings:", error);
   }
-
-  // Card content
-  card.innerHTML = `
-    <div class="status-dot ${statusClass}"></div>
-    <h3>${domain.domain_names.join(", ")}</h3>
-    <p>${hostPort}</p>
-  `;
-
-  // Add link overlay if not in edit mode
-  if (!editMode) {
-    const linkOverlay = document.createElement("a");
-    linkOverlay.href = `http://${domain.domain_names[0]}`; // Use the first domain name
-    linkOverlay.target = "_blank"; // Open in a new tab
-    linkOverlay.rel = "noopener noreferrer"; // Ensure security
-    linkOverlay.className = "card-link"; // Style the overlay
-
-    // Position the link overlay to cover the entire card
-    linkOverlay.style.position = "absolute";
-    linkOverlay.style.top = 0;
-    linkOverlay.style.left = 0;
-    linkOverlay.style.width = "100%";
-    linkOverlay.style.height = "100%";
-    linkOverlay.style.zIndex = 1; // Ensure it is above the card content
-    linkOverlay.style.textDecoration = "none";
-    linkOverlay.style.color = "inherit";
-
-    card.appendChild(linkOverlay);
-  }
-
-  return card;
 }
+
+fetchAndRender();

@@ -1,4 +1,3 @@
-// Drag-and-Drop Handlers
 function setupDragAndDrop() {
   const cards = document.querySelectorAll(".card");
   const droppables = document.querySelectorAll(".drop-zone");
@@ -12,31 +11,45 @@ function setupDragAndDrop() {
   droppables.forEach((dropZone) => {
     dropZone.addEventListener("dragover", (event) => {
       event.preventDefault();
-      dropZone.classList.add("highlight"); // Highlight the drop zone
+      dropZone.classList.add("highlight");
     });
 
     dropZone.addEventListener("dragleave", () => {
-      dropZone.classList.remove("highlight"); // Remove highlight
+      dropZone.classList.remove("highlight");
     });
 
-    dropZone.addEventListener("drop", (event) => {
+    dropZone.addEventListener("drop", async (event) => {
       event.preventDefault();
-      dropZone.classList.remove("highlight"); // Remove highlight
-      const domainId = event.dataTransfer.getData("text/plain");
+      dropZone.classList.remove("highlight");
+      const domainId = parseInt(event.dataTransfer.getData("text/plain"), 10);
       const newGroup = dropZone.dataset.group;
 
       Object.keys(groups).forEach((group) => {
-        const index = groups[group].indexOf(parseInt(domainId, 10));
+        const index = groups[group].indexOf(domainId);
         if (index > -1) groups[group].splice(index, 1);
       });
 
-      if (!groups[newGroup].includes(parseInt(domainId, 10))) {
-        groups[newGroup].push(parseInt(domainId, 10));
-        saveSetting("groups", groups); // Persist updated group services
+      if (!groups[newGroup].includes(domainId)) {
+        groups[newGroup].push(domainId);
+        await saveGroupsToJSON(groups);
       }
 
       renderDashboard();
       setupDragAndDrop();
     });
   });
+}
+
+async function saveGroupsToJSON(updatedGroups) {
+  try {
+    await fetch("/save-groups", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ groups: updatedGroups }),
+    });
+  } catch (error) {
+    console.error("Error saving groups to JSON:", error);
+  }
 }
