@@ -87,6 +87,8 @@ function performSearch(query) {
   const filteredGroups = {};
   let hasResults = false;
 
+  let matchedServices = []; // Collect all matched services across groups
+
   Object.keys(groups).forEach((groupName) => {
     const groupMatches = groupName.toLowerCase().includes(lowerCaseQuery);
 
@@ -113,7 +115,11 @@ function performSearch(query) {
       filteredGroups[groupName] = groupMatches
         ? groups[groupName] // Include all services if group matches
         : filteredDomains.map((domain) => domain.id);
+
       hasResults = true;
+
+      // Add matched services to the list
+      matchedServices = matchedServices.concat(filteredDomains);
     }
   });
 
@@ -125,4 +131,16 @@ function performSearch(query) {
   }
 
   groups = previousGroups;
+
+  // Store matched services globally for keydown handling
+  window.matchedServices = matchedServices;
 }
+
+// Global keydown listener to handle "Enter" for opening a link
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && window.matchedServices?.length === 1) {
+    const matchedService = window.matchedServices[0];
+    const link = `http://${matchedService.domain_names[0]}`;
+    window.open(link, "_blank"); // Open the link in a new tab
+  }
+});
