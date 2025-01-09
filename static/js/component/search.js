@@ -86,9 +86,10 @@ function performSearch(query) {
 
   const filteredGroups = {};
   let hasResults = false;
-  lastVisibleServiceLink = null;
 
   Object.keys(groups).forEach((groupName) => {
+    const groupMatches = groupName.toLowerCase().includes(lowerCaseQuery);
+
     const filteredDomains = groups[groupName]
       .map((domainId) => allDomains.find((domain) => domain.id === domainId))
       .filter((domain) => {
@@ -108,15 +109,11 @@ function performSearch(query) {
         return matchesDomainName || matchesIP || matchesStatus;
       });
 
-    if (filteredDomains.length > 0) {
-      filteredGroups[groupName] = filteredDomains.map((domain) => domain.id);
+    if (groupMatches || filteredDomains.length > 0) {
+      filteredGroups[groupName] = groupMatches
+        ? groups[groupName] // Include all services if group matches
+        : filteredDomains.map((domain) => domain.id);
       hasResults = true;
-
-      if (filteredDomains.length === 1 && !lastVisibleServiceLink) {
-        lastVisibleServiceLink = filteredDomains[0].domain_names[0];
-      } else {
-        lastVisibleServiceLink = null;
-      }
     }
   });
 
