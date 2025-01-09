@@ -6,8 +6,8 @@ import time
 
 app = Flask(__name__, static_folder="static")
 
-SETTINGS_FILE = os.getenv("USER_SETTINGS_FILE", "/app/data/settings.json")
-READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "/nginx/database.sqlite")
+SETTINGS_FILE = os.getenv("USER_SETTINGS_FILE", "app/data/settings.json")
+READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "nginx/database.sqlite")
 
 os.makedirs(os.path.dirname(SETTINGS_FILE), exist_ok=True)
 
