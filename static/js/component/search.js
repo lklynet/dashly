@@ -142,5 +142,9 @@ document.addEventListener("keydown", (event) => {
     const matchedService = window.matchedServices[0];
     const link = `http://${matchedService.domain_names[0]}`;
     window.open(link, "_blank"); // Open the link in a new tab
+
+    // Clear the search bar after opening the link
+    searchBar.value = "";
+    performSearch(""); // Reset the search results
   }
 });
