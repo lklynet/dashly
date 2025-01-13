@@ -3,7 +3,7 @@ name: Docker Image CI/CD
 on:
   push:
     tags:
-      - 'v*.*.*' # Trigger on tags matching semantic versioning (e.g., v2.0.0)
+      - 'v*.*.*' 
 
 jobs:
   build-and-push:

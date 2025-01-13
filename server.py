@@ -3,8 +3,24 @@ import json
 import os
 import sqlite3
 import time
+import subprocess
 
 app = Flask(__name__, static_folder="static")
+
+def get_version_from_git():
+    try:
+        # Get the most recent Git tag (e.g., v2.0.0)
+        version = subprocess.check_output(["git", "describe", "--tags"]).strip().decode("utf-8")
+        return version
+    except Exception as e:
+        print(f"Error fetching version: {e}")
+        return "Unknown"
+
+DASHLY_VERSION = get_version_from_git()
+
+@app.route("/version")
+def get_version():
+    return jsonify({"version": DASHLY_VERSION})
 
 SETTINGS_FILE = os.getenv("USER_SETTINGS_FILE", "/app/data/settings.json")
 READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "/nginx/database.sqlite")

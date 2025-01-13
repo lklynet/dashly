@@ -110,6 +110,30 @@ header h1 {
   background: var(--highlight-color);
   transform: translateY(-2px);
 }
+footer {
+  color: #ffffff; /* White text for readability */
+  text-align: center; /* Center-align text */
+  font-size: 14px; /* Slightly smaller font size */
+  position: fixed; /* Sticks the footer to the bottom */
+  bottom: 0; /* Position at the very bottom */
+  width: 100%; /* Full width */
+  z-index: 10; /* Ensure it stays above other elements */
+}
+
+footer a {
+  color: #7d7d7d; /* Use a light blue color for links */
+  text-decoration: none; /* Remove underline */
+  margin: 0 8px; /* Add spacing between links */
+}
+
+footer a:hover {
+  text-decoration: none; /* Add underline on hover */
+}
+
+footer p {
+  margin: 0; /* Remove default margins for cleaner layout */
+  font-weight: 300; /* Use light font weight for a modern look */
+}
 main {
   padding: var(--base-spacing) calc(var(--base-spacing) * 2);
   max-width: 1200px;

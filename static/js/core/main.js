@@ -9,6 +9,39 @@ const DEFAULT_SETTINGS = {
   renamedGroupNames: { allServices: "New Services" },
 };
 
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const localVersionResponse = await fetch("/version");
+    if (!localVersionResponse.ok) throw new Error("Failed to fetch local version");
+
+    const { version: localVersion } = await localVersionResponse.json();
+
+    const latestVersionResponse = await fetch("https://api.github.com/repos/lklynet/dashly/tags");
+    if (!latestVersionResponse.ok) throw new Error("Failed to fetch latest version");
+
+    const tags = await latestVersionResponse.json();
+    const latestVersion = tags[0]?.name; // Assume the first tag is the latest
+
+    const versionElement = document.getElementById("version-info");
+
+    // Check and update the display based on the version comparison
+    if (localVersion === latestVersion) {
+      versionElement.textContent = `Version: ${localVersion} (Up to date)`;
+    } else {
+      versionElement.textContent = `Version: ${localVersion}`;
+      const updateNotification = document.createElement("span");
+      updateNotification.style.color = "red";
+      updateNotification.style.marginLeft = "10px";
+      updateNotification.textContent = ` (Update available: ${latestVersion})`;
+      versionElement.appendChild(updateNotification);
+    }
+  } catch (error) {
+    console.error("Error checking version:", error);
+    const versionElement = document.getElementById("version-info");
+    versionElement.textContent = "Version: Unknown";
+  }
+});
+
 async function fetchAndRender() {
   try {
     const settings = await fetchSettings();
