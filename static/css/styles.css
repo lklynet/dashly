@@ -114,7 +114,7 @@ footer {
   color: #ffffff; /* White text for readability */
   text-align: center; /* Center-align text */
   font-size: 14px; /* Slightly smaller font size */
-  position: fixed; /* Sticks the footer to the bottom */
+  position: static; /* Sticks the footer to the bottom */
   bottom: 0; /* Position at the very bottom */
   width: 100%; /* Full width */
   z-index: 10; /* Ensure it stays above other elements */
