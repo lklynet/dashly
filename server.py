@@ -8,36 +8,19 @@ import subprocess
 app = Flask(__name__, static_folder="static")
 
 def get_version_from_git():
-    """Fetch the most recent Git tag as the version."""
     try:
-        # Run `git describe` in the correct working directory
-        version = subprocess.check_output(
-            ["git", "describe", "--tags"], cwd=os.getcwd()
-        ).strip().decode("utf-8")
-        print(f"Fetched version: {version}")  # Debugging log
+        # Get the most recent Git tag (e.g., v2.0.0)
+        version = subprocess.check_output(["git", "describe", "--tags"]).strip().decode("utf-8")
         return version
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing git command: {e}")
-        return "Unknown"
-    except FileNotFoundError:
-        # Handle cases where Git is not available in the environment
-        print("Git command not found. Ensure Git is installed and available.")
-        return "Unknown"
     except Exception as e:
-        print(f"Unexpected error while fetching version: {e}")
+        print(f"Error fetching version: {e}")
         return "Unknown"
 
-# Fetch version on application startup
 DASHLY_VERSION = get_version_from_git()
 
 @app.route("/version")
 def get_version():
-    """Return the current application version."""
     return jsonify({"version": DASHLY_VERSION})
-
-if __name__ == "__main__":
-    from waitress import serve
-    serve(app, host="0.0.0.0", port=8080)
 
 SETTINGS_FILE = os.getenv("USER_SETTINGS_FILE", "/app/data/settings.json")
 READ_ONLY_DB_PATH = os.getenv("NGINX_DB_PATH", "/nginx/database.sqlite")
