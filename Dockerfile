@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 COPY . /app
+RUN if [ -d "/app/.git" ]; then echo ".git directory copied successfully"; else echo "Error: .git directory not found"; fi
 RUN mkdir -p /app/data
 RUN pip install --no-cache-dir -r /app/requirements.txt
 EXPOSE 8080
